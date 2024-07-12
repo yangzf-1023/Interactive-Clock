@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可交互时钟</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+    <!-- 整个表 -->
+    <main>
+        <!-- 表 -->
+        <div id="clock">
+            <svg viewbox="0 0 520 600">
+                <!-- 圆心是(260,260)最底层 -->
+                <circle cx="260" cy="260" r="260" fill="black"></circle>
+                <circle cx="260" cy="260" r="255" fill="white"></circle>
+                <!-- 刻度，其他元素的绘制要借助循环 -->
+                <!-- 次底层 -->
+                <path class="second_scale" fill="black" d="M 265 10 L 265 30 L 255 30 L 255 10 L 265 10 Z"></path>
+                <!-- 整点次次底层 -->
+                <path class="hour_scale" fill="black" d="M 270 10 L 270 50 L 250 50 L 250 10 L 270 10 Z"></path>
+
+                <!-- 分针 -->
+                <path id="minute_hand" fill="grey" d="M 260 20 L 270 50 L 270 290 L 250 290 L 250 50 L 260 20 Z"></path>
+                <!-- 时针 -->
+                <path id="hour_hand" fill="black" d="M 260 60 L 270 80 L 270 280 L 250 280 L 250 80 L 260 60 Z">
+                </path>
+                <!-- 秒针整体 -->
+                <path class="second_hand" fill="red" d="M 260 10 L 265 300 L 255 300 L 260 10 Z"></path>
+                <circle class="second_hand" cx="260" cy="100" r="20" fill="red"></circle>
+                <circle class="second_hand" cx="260" cy="100" r="10" fill="white"></circle>
+
+                <!-- 用于提示哪里是圆心 -->
+                <circle cx="260" cy="260" r="10" fill="red"></circle>
+                
+                <text x="180" y="580">00:00:00</text>
+            </svg>
+        </div>
+
+        <!-- 负责数字时间的显示 -->
+        <div id="digit">00:00:00</div>
+        
+
+
+
+        <!-- 控件 -->
+        <div id="widget">
+            <input type="text" maxlength="2" minlength="1">
+            <p>:</p>
+            <input type="text" maxlength="2" minlength="1">
+            <p>:</p>
+            <input type="text" maxlength="2" minlength="1">
+            <input type='button' value="nihao"></input>
+        </div>
+    </main>
+    <!-- 批量绘制刻度 -->
+    <script src="scripts/drawScales.js" defer></script>
+    <script src="scripts/script.js" defer></script>
+</body>
+
+</html>
