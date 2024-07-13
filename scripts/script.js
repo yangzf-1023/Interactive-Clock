@@ -9,25 +9,7 @@ let current = new Date();
 timeContent.textContent = current.toLocaleTimeString();
 // 从文本框读取时间
 
-// // 秒钟数的字符串
-// let seconds = Number(timeContent.textContent.slice(6, 8));
-// let minutes = Number(timeContent.textContent.slice(3, 5));
-// let hours = Number(timeContent.textContent.slice(0, 2));
 
-// // 下面是实现秒针转动（秒针由三部分组成，因此是一个整体）
-// let secondHands = document.querySelectorAll('.second_hand');
-
-// for (item of secondHands) {
-//     item.style.transform =  `rotate(${6 * seconds}, 260 260)`;
-// }
-
-// // 分针转动
-// let minuteHand = document.querySelector('#minute_hand');
-// minuteHand.style.transform = `rotate(${(6 * (minutes + seconds / 60)) % 360}, 260 260)`;
-
-// // 时针转动
-// let hourHand = document.querySelector('#hour_hand');
-// hourHand.style.transform = `rotate(${(30 * (hours + (minutes + seconds / 60) / 60)) % 360}, 260 260)`;
 
 
 function changePerSecond() {
