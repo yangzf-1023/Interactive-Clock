@@ -5,14 +5,18 @@ sessionStorage.removeItem('turnsOfHour');
 // 两个按钮的常值引用
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
+// 时间显示
+const timeContent = document.querySelector("div#digit");
 // 设置时间的三个文本框
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
 const secondPlace = document.querySelector('#second_place');
-// 正则匹配
-let hourRegex = new RegExp("[0-2][0-3]");
-let minuteRegex = new RegExp("[0-5][0-9]");
-let secondRegex = new RegExp("[0-5][0-9]");
+// 正则表达式
+const hourRegex = new RegExp("[0-2][0-3]");
+const minuteRegex = new RegExp("[0-5][0-9]");
+const secondRegex = new RegExp("[0-5][0-9]");
+const timeRegex = new RegExp("[0-2][0-3]:[0-5][0-9]:[0-5][0-9]");
+
 // 点击设置
 setButton.addEventListener('click', function () {
     // 设置的时间
@@ -35,17 +39,15 @@ setButton.addEventListener('click', function () {
     secondPlace.value = "";
     minutePlace.value = "";
 })
+
 // 点击重置
 resetButton.addEventListener('click', function () {
     sessionStorage.removeItem('setTime');
 })
-// 时间显示
-const timeContent = document.querySelector("div#digit");
 
 function changePerSecond() {
     // 默认时间是当前时间
     let current = new Date();
-    let timeRegex = new RegExp("[0-2][0-3]:[0-5][0-9]:[0-5][0-9]");
     // 如果设置了时间
     if (sessionStorage.getItem('setTime')) {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
