@@ -35,6 +35,9 @@ setButton.addEventListener('click', function () {
         let startTime = new Date();
         sessionStorage.setItem('startTime', String(startTime.getTime()));
     }
+    else{
+        alert("输入不合法！");
+    }
     // 清空文本框
     hourPlace.value = "";
     secondPlace.value = "";
