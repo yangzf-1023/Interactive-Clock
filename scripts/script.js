@@ -1,22 +1,19 @@
 // 每次刷新都清除之前的轮数
-// 除此以外，每次设定时间或者是恢复默认时间，都应该清楚之前积攒的轮数
 sessionStorage.removeItem('turnsOfHour');
 sessionStorage.removeItem('turnsOfSecond');
 sessionStorage.removeItem('turnsOfHour');
-
-
+// 两个按钮的常值引用
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
 // 设置时间的三个文本框
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
 const secondPlace = document.querySelector('#second_place');
-
 // 正则匹配
 let hourRegex = new RegExp("[0-2][0-3]");
 let minuteRegex = new RegExp("[0-5][0-9]");
 let secondRegex = new RegExp("[0-5][0-9]");
-
+// 点击设置
 setButton.addEventListener('click', function () {
     // 设置的时间
     let setHour = hourPlace.value;
@@ -33,25 +30,23 @@ setButton.addEventListener('click', function () {
         let startTime = new Date();
         sessionStorage.setItem('startTime', String(startTime.getTime()));
     }
-    else {
-        // 清空文本框
-        hourPlace.value = "";
-        secondPlace.value = "";
-        minutePlace.value = "";
-    }
+    // 清空文本框
+    hourPlace.value = "";
+    secondPlace.value = "";
+    minutePlace.value = "";
 })
-
+// 点击重置
 resetButton.addEventListener('click', function () {
     sessionStorage.removeItem('setTime');
 })
-
+// 时间显示
 const timeContent = document.querySelector("div#digit");
 
 function changePerSecond() {
     // 默认时间是当前时间
     let current = new Date();
     let timeRegex = new RegExp("[0-2][0-3]:[0-5][0-9]:[0-5][0-9]");
-
+    // 如果设置了时间
     if (sessionStorage.getItem('setTime')) {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
         let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
@@ -61,9 +56,9 @@ function changePerSecond() {
         let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
         current = new Date(setTime.getTime() + deltaTime);
     }
+    // 更新时间显示
     timeContent.textContent = current.toLocaleTimeString();
-    // 设置的时间加上时间差
-
+    // 更新初始内容
     hourPlace.placeholder = timeContent.textContent.slice(0, 2);
     minutePlace.placeholder = timeContent.textContent.slice(3, 5);
     secondPlace.placeholder = timeContent.textContent.slice(6, 8);
