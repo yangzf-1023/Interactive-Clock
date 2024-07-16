@@ -35,17 +35,14 @@
 
                 <!-- 用于提示哪里是圆心 -->
                 <circle cx="260" cy="260" r="10" fill="red"></circle>
-                
-                <text x="180" y="580">00:00:00</text>
+                <!-- 数字时间显示 -->
+                <text x="180" y="580" id="time">00:00:00</text>
             </svg>
         </div>
 
         <!-- 负责数字时间的显示 -->
-        <div id="digit">00:00:00</div>
+        <!-- <div id="digit">00:00:00</div> -->
         
-
-
-
         <!-- 控件 -->
         <div id="widget">
             <input type="text" maxlength="2" minlength="2" id="hour_place" inputmode="numeric" pattern="[0-2][0-3]">
@@ -55,7 +52,6 @@
             <input type="text" maxlength="2" minlength="2" id="second_place" inputmode="numeric" pattern="[0-5][0-9]">
             <input type='button' value="设置" id="set"></input>
             <input type='button' value="重置" id="reset"></input>
-
         </div>
     </main>
     <!-- 批量绘制刻度 -->

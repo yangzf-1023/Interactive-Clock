@@ -6,7 +6,8 @@ sessionStorage.removeItem('turnsOfHour');
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
 // 时间显示
-const timeContent = document.querySelector("div#digit");
+// const timeContent = document.querySelector("div#digit");
+const timeContent = document.querySelector("#time");
 // 设置时间的三个文本框
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
