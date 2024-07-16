@@ -54,3 +54,7 @@ div#digit {
     transform: rotate(var(--degree));
 }
 
+div#widget p{
+    position:relative;
+}
+

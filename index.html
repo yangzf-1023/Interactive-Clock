@@ -48,12 +48,14 @@
 
         <!-- 控件 -->
         <div id="widget">
-            <input type="text" maxlength="2" minlength="1">
+            <input type="text" maxlength="2" minlength="2" id="hour_place" inputmode="numeric" pattern="[0-2][0-3]">
             <p>:</p>
-            <input type="text" maxlength="2" minlength="1">
+            <input type="text" maxlength="2" minlength="2" id="minute_place" inputmode="numeric" pattern="[0-5][0-9]">
             <p>:</p>
-            <input type="text" maxlength="2" minlength="1">
-            <input type='button' value="重置"></input>
+            <input type="text" maxlength="2" minlength="2" id="second_place" inputmode="numeric" pattern="[0-5][0-9]">
+            <input type='button' value="设置" id="set"></input>
+            <input type='button' value="重置" id="reset"></input>
+
         </div>
     </main>
     <!-- 批量绘制刻度 -->

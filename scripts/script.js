@@ -1,10 +1,3 @@
-const timeContent = document.querySelector("div#digit");
-
-// 进行修改
-
-// 首先获得起始时间
-
-
 // 每次刷新都清除之前的轮数
 // 除此以外，每次设定时间或者是恢复默认时间，都应该清楚之前积攒的轮数
 sessionStorage.removeItem('turnsOfHour');
@@ -12,11 +5,68 @@ sessionStorage.removeItem('turnsOfSecond');
 sessionStorage.removeItem('turnsOfHour');
 
 
+const setButton = document.querySelector("input#set");
+const resetButton = document.querySelector("input#reset");
+// 设置时间的三个文本框
+const hourPlace = document.querySelector('#hour_place');
+const minutePlace = document.querySelector('#minute_place');
+const secondPlace = document.querySelector('#second_place');
+
+// 正则匹配
+let hourRegex = new RegExp("[0-2][0-3]");
+let minuteRegex = new RegExp("[0-5][0-9]");
+let secondRegex = new RegExp("[0-5][0-9]");
+
+setButton.addEventListener('click', function () {
+    // 设置的时间
+    let setHour = hourPlace.value;
+    let setMinute = minutePlace.value;
+    let setSecond = secondPlace.value;
+    // 格式正确
+    if (hourRegex.test(setHour) && secondRegex.test(setSecond) && minuteRegex.test(setMinute)) {
+        // 存储时间
+        sessionStorage.setItem('setTime', setHour + ":" + setMinute + ":" + setSecond);
+        // 清除之前积攒的轮数
+        sessionStorage.removeItem('turnsOfHour');
+        sessionStorage.removeItem('turnsOfSecond');
+        sessionStorage.removeItem('turnsOfHour');
+        let startTime = new Date();
+        sessionStorage.setItem('startTime', String(startTime.getTime()));
+    }
+    else {
+        // 清空文本框
+        hourPlace.value = "";
+        secondPlace.value = "";
+        minutePlace.value = "";
+    }
+})
+
+resetButton.addEventListener('click', function () {
+    sessionStorage.removeItem('setTime');
+})
+
+const timeContent = document.querySelector("div#digit");
+
 function changePerSecond() {
     // 默认时间是当前时间
     let current = new Date();
+    let timeRegex = new RegExp("[0-2][0-3]:[0-5][0-9]:[0-5][0-9]");
+
+    if (sessionStorage.getItem('setTime')) {
+        // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
+        let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
+        // 如果存了合法的输入
+
+        // 首先确定时间差，秒形式
+        let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
+        current = new Date(setTime.getTime() + deltaTime);
+    }
     timeContent.textContent = current.toLocaleTimeString();
-    // todo:从文本框读取时间信息
+    // 设置的时间加上时间差
+
+    hourPlace.placeholder = timeContent.textContent.slice(0, 2);
+    minutePlace.placeholder = timeContent.textContent.slice(3, 5);
+    secondPlace.placeholder = timeContent.textContent.slice(6, 8);
 
     // 获取积累的圈数
     if (!sessionStorage.getItem('turnsOfSecond')) {
