@@ -50,8 +50,6 @@ function changePerSecond() {
     if (sessionStorage.getItem('setTime')) {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
         let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
-        // 如果存了合法的输入
-
         // 首先确定时间差，秒形式
         let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
         current = new Date(setTime.getTime() + deltaTime);
@@ -104,6 +102,7 @@ function changePerSecond() {
     if (angleOfHour === 0) {
         sessionStorage.setItem('turnsOfHour', turnsOfHour + 1);
     }
+    // 获取圈数
     turnsOfSecond = Number(sessionStorage.getItem('turnsOfSecond'));
     turnsOfMinute = Number(sessionStorage.getItem('turnsOfMinute'));
     turnsOfHour = Number(sessionStorage.getItem('turnsOfHour'));
