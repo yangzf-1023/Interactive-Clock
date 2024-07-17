@@ -13,7 +13,7 @@ const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
 const secondPlace = document.querySelector('#second_place');
 // 正则表达式
-const hourRegex = new RegExp("[0-2][0-3]");
+const hourRegex = new RegExp("[0-1]\\d|2[0-3]");
 const minuteRegex = new RegExp("[0-5]\\d");
 const secondRegex = new RegExp("[0-5]\\d");
 const timeRegex = new RegExp("(?:[0-1]\\d|2[0-3]):[0-5]\\d:[0-5]\\d");
@@ -55,10 +55,10 @@ function changePerSecond() {
     // 如果设置了时间
     if (sessionStorage.getItem('setTime')) {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
-        let text = current.toString();
-        let time_set = sessionStorage.getItem('setTime');
-        text = text.replace(timeRegex, time_set);
-        let setTime = new Date(text);
+        let timeText = current.toString();
+        let setTimeText = sessionStorage.getItem('setTime');
+        timeText = timeText.replace(timeRegex, setTimeText);
+        let setTime = new Date(timeText);
         // let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
         // 首先确定时间差，秒形式
         let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
