@@ -2,63 +2,98 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>可交互时钟</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
 <body>
-    <!-- 整个表 -->
-    <main>
-        <!-- 表 -->
-        <div id="clock">
-            <svg viewbox="0 0 520 600">
-                <!-- 圆心是(260,260)最底层 -->
-                <circle cx="260" cy="260" r="260" fill="black"></circle>
-                <circle cx="260" cy="260" r="255" fill="white"></circle>
-                <!-- 刻度，其他元素的绘制要借助循环 -->
-                <!-- 次底层 -->
-                <path class="second_scale" fill="black" d="M 265 10 L 265 30 L 255 30 L 255 10 L 265 10 Z"></path>
-                <!-- 整点次次底层 -->
-                <path class="hour_scale" fill="black" d="M 270 10 L 270 50 L 250 50 L 250 10 L 270 10 Z"></path>
+<!-- 整个表 -->
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8" style="display: flex; justify-content: center">
+            <div id="clock">
+                <svg viewbox="0 0 520 600">
+                    <!-- 圆心是(260,260)最底层 -->
+                    <circle cx="260" cy="260" r="260" fill="black"></circle>
+                    <circle cx="260" cy="260" r="255" fill="white"></circle>
+                    <!-- 刻度，其他元素的绘制要借助循环 -->
+                    <!-- 次底层 -->
+                    <path class="second_scale" fill="black" d="M 265 10 L 265 30 L 255 30 L 255 10 L 265 10 Z"></path>
+                    <!-- 整点次次底层 -->
+                    <path class="hour_scale" fill="black" d="M 270 10 L 270 50 L 250 50 L 250 10 L 270 10 Z"></path>
 
-                <!-- 分针 -->
-                <path id="minute_hand" fill="grey" d="M 260 20 L 270 50 L 270 290 L 250 290 L 250 50 L 260 20 Z"></path>
-                <!-- 时针 -->
-                <path id="hour_hand" fill="black" d="M 260 60 L 270 80 L 270 280 L 250 280 L 250 80 L 260 60 Z">
-                </path>
-                <!-- 秒针整体 -->
-                <path class="second_hand" fill="red" d="M 260 10 L 265 300 L 255 300 L 260 10 Z"></path>
-                <circle class="second_hand" cx="260" cy="100" r="20" fill="red"></circle>
-                <circle class="second_hand" cx="260" cy="100" r="10" fill="white"></circle>
+                    <!-- 分针 -->
+                    <path id="minute_hand" fill="grey"
+                          d="M 260 20 L 270 50 L 270 290 L 250 290 L 250 50 L 260 20 Z"></path>
+                    <!-- 时针 -->
+                    <path id="hour_hand" fill="black" d="M 260 60 L 270 80 L 270 280 L 250 280 L 250 80 L 260 60 Z">
+                    </path>
+                    <!-- 秒针整体 -->
+                    <path class="second_hand" fill="red" d="M 260 10 L 265 300 L 255 300 L 260 10 Z"></path>
+                    <circle class="second_hand" cx="260" cy="100" r="20" fill="red"></circle>
+                    <circle class="second_hand" cx="260" cy="100" r="10" fill="white"></circle>
 
-                <!-- 用于提示哪里是圆心 -->
-                <circle cx="260" cy="260" r="10" fill="red"></circle>
-                <!-- 数字时间显示 -->
-                <text x="180" y="580" id="time">00:00:00</text>
-            </svg>
+                    <!-- 用于提示哪里是圆心 -->
+                    <circle cx="260" cy="260" r="10" fill="red"></circle>
+                    <!-- 数字时间显示 -->
+                    <text x="180" y="580" id="time">00:00:00</text>
+                </svg>
+            </div>
         </div>
+    </div>
 
-        <!-- 负责数字时间的显示 -->
-        <!-- <div id="digit">00:00:00</div> -->
+    <!-- 负责数字时间的显示 -->
+    <!-- <div id="digit">00:00:00</div> -->
 
-        <!-- 控件 -->
-        <div id="widget">
-            <input type="text" maxlength="2" minlength="2" id="hour_place" inputmode="numeric" pattern="(?:[0-1][0-9]|2[0-3])">
-            <p>:</p>
-            <input type="text" maxlength="2" minlength="2" id="minute_place" inputmode="numeric" pattern="[0-5][0-9]">
-            <p>:</p>
-            <input type="text" maxlength="2" minlength="2" id="second_place" inputmode="numeric" pattern="[0-5][0-9]">
-            <input type='button' value="设置" id="set"></input>
-            <input type='button' value="重置" id="reset"></input>
-            <input type='button' value="暂停" id="pause"></input>
+    <!-- 控件 -->
+    <div class="row justify-content-center">
+        <div class="col-md-2 mt-2">
+            <form class="form-floating">
+                <input type="text" class="form-control" maxlength="2" minlength="2" id="hour_place" inputmode="numeric"
+                       pattern="(?:[0-1][0-9]|2[0-3])">
+                <label for="hour_place">Hour:</label>
+            </form>
         </div>
-    </main>
-    <!-- 批量绘制刻度 -->
-    <script src="scripts/drawScales.js" defer></script>
-    <script src="scripts/script.js" defer></script>
-    <script src="scripts/draggableHeads.js" defer></script>
+        <div class="col-md-2 mt-2">
+            <form class="form-floating">
+                <input type="text" class="form-control" maxlength="2" minlength="2" id="minute_place"
+                       inputmode="numeric"
+                       pattern="[0-5][0-9]">
+                <label for="minute_place">Minute:</label>
+            </form>
+        </div>
+        <div class="col-md-2 mt-2">
+            <form class="form-floating">
+                <input type="text" class="form-control" maxlength="2" minlength="2" id="second_place"
+                       inputmode="numeric"
+                       pattern="[0-5][0-9]">
+                <label for="second_place">Second:</label>
+            </form>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-2 myBtnContainer">
+            <input type='button' class="btn btn-primary myBtn" value="设置" id="set"></input>
+        </div>
+        <div class="col-md-2 myBtnContainer">
+            <input type='button' class="btn btn-secondary myBtn" value="重置" id="reset"></input>
+        </div>
+        <div class="col-md-2 myBtnContainer">
+            <input type='button' class="btn btn-warning myBtn" value="暂停" id="pause"></input>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<!-- 批量绘制刻度 -->
+<script src="scripts/drawScales.js" defer></script>
+<script src="scripts/script.js" defer></script>
+<script src="scripts/draggableHeads.js" defer></script>
 </body>
 
 </html>
