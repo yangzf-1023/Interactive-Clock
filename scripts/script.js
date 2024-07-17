@@ -59,13 +59,16 @@ pauseButton.addEventListener('click', function () {
         hourPlace.disabled = false;
         minutePlace.disabled = false;
         secondPlace.disabled = false;
-        // sessionStorage.setItem("setTime", timeContent.textContent);
+        // 起始的暂停时间
+        sessionStorage.setItem("startPause", String(Date.now()));
     } else {
         pauseButton.value = "暂停";
         hourPlace.disabled = true;
         minutePlace.disabled = true;
         secondPlace.disabled = true;
         isClockRestarted = true;
+        // 结束暂停的时间
+        sessionStorage.setItem('endPause',String(Date.now()));
     }
 })
 
@@ -78,12 +81,16 @@ function changePerSecond() {
     // 默认时间是当前时间
     let current = new Date();
 
+    let pauseTime = 0;
+
     // 如果时钟被暂停则重新计时
     if (isClockRestarted) {
-        let newStartTime = current.getTime();
-        sessionStorage.setItem('startTime', String(newStartTime - 1000));
+        // let newStartTime = current.getTime();
+        // // sessionStorage.setItem('startTime', String(newStartTime - 1000));
+        // sessionStorage.setItem('startTime', String(newStartTime - 1000));
+        pauseTime = Number(sessionStorage.getItem('endPause')) - Number(sessionStorage.getItem('startPause'));
         isClockRestarted = false;
-        console.log("Restart");
+        console.log("Restart", pauseTime);
     }
 
     // 如果设置了时间
@@ -92,7 +99,7 @@ function changePerSecond() {
         let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
         // 首先确定时间差，秒形式
         let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
-        current = new Date(setTime.getTime() + deltaTime);
+        current = new Date(setTime.getTime() + deltaTime - pauseTime);
     }
 
     // 更新时间显示
