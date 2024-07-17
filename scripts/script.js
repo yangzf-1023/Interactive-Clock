@@ -67,7 +67,6 @@ pauseButton.addEventListener('click', function () {
         minutePlace.disabled = true;
         secondPlace.disabled = true;
         isClockRestarted = true;
-        
     }
 })
 
@@ -79,16 +78,21 @@ function changePerSecond() {
 
     // 默认时间是当前时间
     let current = new Date();
-
     let pauseTime = 0;
 
     // 如果时钟被暂停则重新计时
     if (isClockRestarted) {
+        sessionStorage.setItem('endPause', String(Date.now()));
         // 结束暂停的时间
-        sessionStorage.setItem('endPause',String(Date.now()));
         pauseTime = Number(sessionStorage.getItem('endPause')) - Number(sessionStorage.getItem('startPause'));
+        let accumulatePauseTime = sessionStorage.getItem('pauseTime');
+        if (!accumulatePauseTime) {
+            sessionStorage.setItem('pauseTime', String(pauseTime));
+        }
+        else {
+            sessionStorage.setItem('pauseTime', String(Number(accumulatePauseTime) + pauseTime));
+        }
         isClockRestarted = false;
-        console.log("Restart", pauseTime);
     }
 
     // 如果设置了时间
@@ -96,12 +100,13 @@ function changePerSecond() {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
         let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
         // 首先确定时间差，秒形式
-        let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
+        let deltaTime = Date.now() - Number(sessionStorage.getItem('startTime'));
         current = new Date(setTime.getTime() + deltaTime - pauseTime);
     }
+    else {
+        current = new Date(Date.now() - Number(sessionStorage.getItem('pauseTime')));
+    }
 
-    // 更新时间显示
-    // timeContent.textContent = current.toLocaleTimeString();
     // 更新初始内容
     let timeString = current.toLocaleTimeString();
     hourPlace.placeholder = timeString.slice(0, 2);
