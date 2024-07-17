@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const svg = document.querySelector('svg');
     let minuteHand = document.querySelector('#minute_hand');
     let hourHand = document.querySelector('#hour_hand');
-    // const secondHand = document.querySelector('#second_hand');
+    const secondHand = document.querySelector('#second_handle');
 
-    const hands = [minuteHand, hourHand];
+    const hands = [minuteHand, hourHand, secondHand];
 
     hands.forEach(hand => {
         hand.addEventListener('mousedown', startDrag);
@@ -31,18 +31,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const dx = mouseX - centerX;
             const dy = mouseY - centerY;
-            let angle = Math.atan2(dy, dx) * (180 / Math.PI)+90;
+            let angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
             console.log(dx, dy, angle);
             if (selectedElement === minuteHand) {
                 angle += sessionStorage.getItem('turnsOfMinute') * 360;
-            }
-            else if(selectedElement === hourHand){
+            } else if (selectedElement === hourHand) {
                 angle += sessionStorage.getItem('turnsOfHour') * 360;
-            }
-            else {
+            } else {
                 angle += sessionStorage.getItem('turnsOfSecond') * 360;
             }
-            selectedElement.style.setProperty('--degree', `${angle}deg`);
+            if (selectedElement.id.indexOf("second_") === -1) {
+                /* 不是秒针 */
+                selectedElement.style.setProperty('--degree', `${angle}deg`);
+            } else {
+                /* 是秒针，需要一次性改多个元素 */
+                secondHand.style.setProperty('--degree', `${angle}deg`);
+            }
         }
     }
 
