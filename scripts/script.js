@@ -67,8 +67,7 @@ pauseButton.addEventListener('click', function () {
         minutePlace.disabled = true;
         secondPlace.disabled = true;
         isClockRestarted = true;
-        // 结束暂停的时间
-        sessionStorage.setItem('endPause',String(Date.now()));
+        
     }
 })
 
@@ -85,9 +84,8 @@ function changePerSecond() {
 
     // 如果时钟被暂停则重新计时
     if (isClockRestarted) {
-        // let newStartTime = current.getTime();
-        // // sessionStorage.setItem('startTime', String(newStartTime - 1000));
-        // sessionStorage.setItem('startTime', String(newStartTime - 1000));
+        // 结束暂停的时间
+        sessionStorage.setItem('endPause',String(Date.now()));
         pauseTime = Number(sessionStorage.getItem('endPause')) - Number(sessionStorage.getItem('startPause'));
         isClockRestarted = false;
         console.log("Restart", pauseTime);
