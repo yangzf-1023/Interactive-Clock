@@ -45,8 +45,7 @@ setButton.addEventListener('click', function () {
         sessionStorage.removeItem('turnsOfHour');
         let startTime = new Date();
         sessionStorage.setItem('startTime', String(startTime.getTime()));
-    }
-    else{
+    } else {
         alert("输入不合法！");
     }
     // 清空文本框
@@ -65,12 +64,12 @@ pauseButton.addEventListener('click', function () {
     if (isClockPaused) {
         pauseButton.value = "继续";
         sessionStorage.setItem("setTime", timeContent.textContent);
-    }
-    else {
+    } else {
         pauseButton.value = "暂停";
         isClockRestarted = true;
     }
 })
+
 function changePerSecond() {
     // 停止时钟
     if (isClockPaused) {
@@ -83,7 +82,7 @@ function changePerSecond() {
     // 如果时钟被暂停则重新计时
     if (isClockRestarted) {
         let newStartTime = current.getTime();
-        sessionStorage.setItem('startTime', String(newStartTime-1000));
+        sessionStorage.setItem('startTime', String(newStartTime - 1000));
         isClockRestarted = false;
         console.log("Restart");
     }
@@ -101,8 +100,11 @@ function changePerSecond() {
     timeContent.textContent = current.toLocaleTimeString();
     // 更新初始内容
     hourPlace.placeholder = timeContent.textContent.slice(0, 2);
+    hourPlace.value = timeContent.textContent.slice(0, 2);
     minutePlace.placeholder = timeContent.textContent.slice(3, 5);
+    minutePlace.value = timeContent.textContent.slice(3, 5);
     secondPlace.placeholder = timeContent.textContent.slice(6, 8);
+    secondPlace.value = timeContent.textContent.slice(6, 8);
 
     // 获取积累的圈数
     if (!sessionStorage.getItem('turnsOfSecond')) {
