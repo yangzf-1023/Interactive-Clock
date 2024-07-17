@@ -26,6 +26,8 @@ let hourHand = document.querySelector('#hour_hand');
 let isClockPaused = false;
 let isClockRestarted = false;
 
+let first = false;
+
 // 点击设置
 setButton.addEventListener('click', function () {
     // 设置的时间
@@ -34,6 +36,9 @@ setButton.addEventListener('click', function () {
     let setSecond = secondPlace.value;
     // 格式正确
     if (hourRegex.test(setHour) && secondRegex.test(setSecond) && minuteRegex.test(setMinute)) {
+        first = true;
+
+
         // 存储时间
         sessionStorage.setItem('setTime', setHour + ":" + setMinute + ":" + setSecond);
         // 清除之前积攒的轮数
@@ -42,6 +47,8 @@ setButton.addEventListener('click', function () {
         sessionStorage.removeItem('turnsOfHour');
         let startTime = new Date();
         sessionStorage.setItem('startTime', String(startTime.getTime()));
+
+        sessionStorage.removeItem('pauseTime');
     } else {
         alert("输入不合法！");
     }
@@ -100,11 +107,22 @@ function changePerSecond() {
     if (sessionStorage.getItem('setTime')) {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
         let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
+
         // 首先确定时间差，秒形式
         let deltaTime = Date.now() - Number(sessionStorage.getItem('startTime'));
-        current = new Date(setTime.getTime() + deltaTime - pauseTime);
+
+        if(first){
+            sessionStorage.setItem('pauseTime', String(deltaTime));
+            first = false;
+        }
+
+
+        current = new Date(setTime.getTime() + deltaTime - Number(sessionStorage.getItem('pauseTime')));
+
+        console.log(setTime.getTime(),deltaTime, Number(sessionStorage.getItem('pauseTime')));
     }
     else {
+        // 没有设置过时间
         current = new Date(Date.now() - Number(sessionStorage.getItem('pauseTime')));
     }
 
