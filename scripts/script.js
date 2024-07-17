@@ -6,9 +6,6 @@ sessionStorage.removeItem('turnsOfHour');
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
 const pauseButton = document.querySelector("input#pause");
-// 时间显示
-// const timeContent = document.querySelector("div#digit");
-const timeContent = document.querySelector("#time");
 // 设置时间的三个文本框
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
@@ -63,7 +60,7 @@ pauseButton.addEventListener('click', function () {
     isClockPaused = !isClockPaused;
     if (isClockPaused) {
         pauseButton.value = "继续";
-        sessionStorage.setItem("setTime", timeContent.textContent);
+        // sessionStorage.setItem("setTime", timeContent.textContent);
     } else {
         pauseButton.value = "暂停";
         isClockRestarted = true;
@@ -97,14 +94,15 @@ function changePerSecond() {
     }
 
     // 更新时间显示
-    timeContent.textContent = current.toLocaleTimeString();
+    // timeContent.textContent = current.toLocaleTimeString();
     // 更新初始内容
-    hourPlace.placeholder = timeContent.textContent.slice(0, 2);
-    hourPlace.value = timeContent.textContent.slice(0, 2);
-    minutePlace.placeholder = timeContent.textContent.slice(3, 5);
-    minutePlace.value = timeContent.textContent.slice(3, 5);
-    secondPlace.placeholder = timeContent.textContent.slice(6, 8);
-    secondPlace.value = timeContent.textContent.slice(6, 8);
+    let timeString = current.toLocaleTimeString();
+    hourPlace.placeholder = timeString.slice(0, 2);
+    hourPlace.value = timeString.slice(0, 2);
+    minutePlace.placeholder = timeString.slice(3, 5);
+    minutePlace.value = timeString.slice(3, 5);
+    secondPlace.placeholder = timeString.slice(6, 8);
+    secondPlace.value = timeString.slice(6, 8);
 
     // 获取积累的圈数
     if (!sessionStorage.getItem('turnsOfSecond')) {
