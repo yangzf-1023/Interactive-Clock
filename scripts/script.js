@@ -152,10 +152,11 @@ function changePerSecond() {
     for (const item of secondHands) {
         item.style.setProperty('--degree', `${angleOfSecond + 360 * turnsOfSecond}deg`);
     }
-
     minuteHand.style.setProperty('--degree', `${angleOfMinute + 360 * turnsOfMinute}deg`);
-
     hourHand.style.setProperty('--degree', `${angleOfHour + 360 * turnsOfHour}deg`);
+    const degreeValue = window.getComputedStyle(minuteHand).getPropertyValue('--degree');
+
+    console.log(`The degree value is: ${degreeValue}`);
 }
 
 // 两次调用防止刷新
