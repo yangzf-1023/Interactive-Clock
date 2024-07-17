@@ -115,12 +115,46 @@ hourHand.style.setProperty('--degree', `${angleOfHour + 360 * turnsOfHour}deg`);
 
 ### 用户交互
 
+为了让本SVG项目有现代前端工程的用户体验，我们使用了Bootstrap 5框架来进行前端的总体搭建。我们使用
+Bootstrap 5中的网格系统和其它控件与样式以实现一个**响应式**的页面。
+
+#### PC端
+
+![PC端](doc/pc-end.png)
+
+当屏幕大小发生变化时，时钟与其他元素也应该有自适应屏幕大小的能力。现在进行移动端页面的媒体选择调试：
+
+#### iPhone 12 Pro
+
+![img.png](doc/iphone12pro.png)
+
+#### iPad Pro
+
+![img.png](doc/ipadpro.png)
+
 ## 使用说明
+
+本项目为静态网页项目，所有资源中的路径都是相对路径，可以通过直接打开`index.html`进行使用。本项目的
+目录结构如下：
+
+```text
+doc/            存放与report.pdf文档有关的资源
+scripts/        存放网页中使用的脚本文件
+styles/         存放网页中使用的样式表文件
+index.html      主页面
+report.pdf      报告
+```
 
 ## 遇到问题与解决办法
 
 ### 如何存储中间状态
 
+使用sessionStorage
+
 ### 秒针有的时候会一次跳两格
 
+重构状态机、使用`console.log`进行大量调试
+
 ### SVG的大小无法改变
+
+查看文档，改变父容器的布局
