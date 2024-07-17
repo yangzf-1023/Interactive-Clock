@@ -45,10 +45,6 @@ setButton.addEventListener('click', function () {
     } else {
         alert("输入不合法！");
     }
-    // 清空文本框
-    hourPlace.value = "";
-    secondPlace.value = "";
-    minutePlace.value = "";
 })
 
 // 点击重置
@@ -60,9 +56,15 @@ pauseButton.addEventListener('click', function () {
     isClockPaused = !isClockPaused;
     if (isClockPaused) {
         pauseButton.value = "继续";
+        hourPlace.disabled = false;
+        minutePlace.disabled = false;
+        secondPlace.disabled = false;
         // sessionStorage.setItem("setTime", timeContent.textContent);
     } else {
         pauseButton.value = "暂停";
+        hourPlace.disabled = true;
+        minutePlace.disabled = true;
+        secondPlace.disabled = true;
         isClockRestarted = true;
     }
 })
