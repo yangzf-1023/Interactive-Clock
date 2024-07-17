@@ -55,11 +55,7 @@ function changePerSecond() {
     // 如果设置了时间
     if (sessionStorage.getItem('setTime')) {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
-        let timeText = current.toString();
-        let setTimeText = sessionStorage.getItem('setTime');
-        timeText = timeText.replace(timeRegex, setTimeText);
-        let setTime = new Date(timeText);
-        // let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
+        let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
         // 首先确定时间差，秒形式
         let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
         current = new Date(setTime.getTime() + deltaTime);
