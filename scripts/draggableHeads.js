@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const svg = document.querySelector('svg');
+    const centerGetter = document.querySelector('#centerGetter');
+
     let minuteHand = document.querySelector('#minute_hand');
     let hourHand = document.querySelector('#hour_hand');
     const secondHand = document.querySelector('#second_handle');
@@ -15,9 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startDrag(event) {
         selectedElement = event.target;
-        selectedElement.style.transitionDuration = '0s';
-        centerX = 260;
-        centerY = 260;
+        if (selectedElement.id.indexOf("second_") === -1) {
+            /* 不是秒针 */
+            selectedElement.style.transitionDuration = '0s';
+        } else {
+            /* 是秒针，需要一次性改多个元素 */
+            secondHand.style.transitionDuration = '0s';
+        }
+        centerX = centerGetter.getBoundingClientRect().x;
+        centerY = centerGetter.getBoundingClientRect().y;
 
         svg.addEventListener('mousemove', drag);
         svg.addEventListener('mouseup', endDrag);
@@ -26,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drag(event) {
         if (selectedElement) {
-            const mouseX = event.clientX - svg.getBoundingClientRect().left;
-            const mouseY = event.clientY - svg.getBoundingClientRect().top;
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
 
             const dx = mouseX - centerX;
             const dy = mouseY - centerY;
