@@ -5,6 +5,7 @@ sessionStorage.removeItem('turnsOfHour');
 // 两个按钮的常值引用
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
+const pauseButton = document.querySelector("input#pause");
 // 时间显示
 // const timeContent = document.querySelector("div#digit");
 const timeContent = document.querySelector("#time");
@@ -25,6 +26,8 @@ let minuteHand = document.querySelector('#minute_hand');
 // 时针转动
 let hourHand = document.querySelector('#hour_hand');
 
+let isClockPaused = false;
+let isClockRestarted = false;
 
 // 点击设置
 setButton.addEventListener('click', function () {
@@ -57,6 +60,13 @@ resetButton.addEventListener('click', function () {
     sessionStorage.removeItem('setTime');
 })
 
+pauseButton.addEventListener('click', function () {
+    isClockPaused = !isClockPaused;
+    if (isClockPaused) {
+    }
+    else {
+    }
+})
 function changePerSecond() {
     // 默认时间是当前时间
     let current = new Date();
