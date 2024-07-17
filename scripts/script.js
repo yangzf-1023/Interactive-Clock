@@ -63,13 +63,31 @@ resetButton.addEventListener('click', function () {
 pauseButton.addEventListener('click', function () {
     isClockPaused = !isClockPaused;
     if (isClockPaused) {
+        pauseButton.value = "继续";
+        sessionStorage.setItem("setTime", timeContent.textContent);
     }
     else {
+        pauseButton.value = "暂停";
+        isClockRestarted = true;
     }
 })
 function changePerSecond() {
+    // 停止时钟
+    if (isClockPaused) {
+        return;
+    }
+
     // 默认时间是当前时间
     let current = new Date();
+
+    // 如果时钟被暂停则重新计时
+    if (isClockRestarted) {
+        let newStartTime = (current.getTime() / 1000)*1000+Number(sessionStorage.getItem('startTime'))%1000;
+        sessionStorage.setItem('startTime', String(newStartTime-1000));
+        isClockRestarted = false;
+        console.log("Restart");
+    }
+
     // 如果设置了时间
     if (sessionStorage.getItem('setTime')) {
         // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
@@ -78,6 +96,7 @@ function changePerSecond() {
         let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
         current = new Date(setTime.getTime() + deltaTime);
     }
+
     // 更新时间显示
     timeContent.textContent = current.toLocaleTimeString();
     // 更新初始内容
