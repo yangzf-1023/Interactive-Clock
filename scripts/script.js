@@ -17,7 +17,14 @@ const hourRegex = new RegExp("[0-2][0-3]");
 const minuteRegex = new RegExp("[0-5][0-9]");
 const secondRegex = new RegExp("[0-5][0-9]");
 const timeRegex = new RegExp("[0-2][0-3]:[0-5][0-9]:[0-5][0-9]");
-// test
+
+// 下面是实现秒针转动（秒针由三部分组成，因此是一个整体）
+let secondHands = document.querySelectorAll('.second_hand');
+// 分针转动
+let minuteHand = document.querySelector('#minute_hand');
+// 时针转动
+let hourHand = document.querySelector('#hour_hand');
+
 
 // 点击设置
 setButton.addEventListener('click', function () {
@@ -89,9 +96,6 @@ function changePerSecond() {
     let minutes = current.getMinutes();
     let hours = current.getHours() % 12;
 
-    // 下面是实现秒针转动（秒针由三部分组成，因此是一个整体）
-    let secondHands = document.querySelectorAll('.second_hand');
-
     // 计算当圈的角度（<360）
     let angleOfSecond = 6 * seconds;
     let angleOfMinute = 6 * (minutes + seconds / 60);
@@ -120,12 +124,8 @@ function changePerSecond() {
         item.style.setProperty('--degree', `${angleOfSecond + 360 * turnsOfSecond}deg`);
     }
 
-    // 分针转动
-    let minuteHand = document.querySelector('#minute_hand');
     minuteHand.style.setProperty('--degree', `${angleOfMinute + 360 * turnsOfMinute}deg`);
 
-    // 时针转动
-    let hourHand = document.querySelector('#hour_hand');
     hourHand.style.setProperty('--degree', `${angleOfHour + 360 * turnsOfHour}deg`);
 }
 
