@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const svg = document.querySelector('svg');
-    const minuteHand = document.querySelector('#minute_hand');
-    const hourHand = document.querySelector('#hour_hand');
+    let minuteHand = document.querySelector('#minute_hand');
+    let hourHand = document.querySelector('#hour_hand');
     // const secondHand = document.querySelector('#second_hand');
 
     const hands = [minuteHand, hourHand];
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startDrag(event) {
         selectedElement = event.target;
+        selectedElement.style.transitionDuration = '0s';
         centerX = 260;
         centerY = 260;
 
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const dx = mouseX - centerX;
             const dy = mouseY - centerY;
-            let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            let angle = Math.atan2(dy, dx) * (180 / Math.PI)+90;
             console.log(dx, dy, angle);
             if (selectedElement === minuteHand) {
                 angle += sessionStorage.getItem('turnsOfMinute') * 360;
@@ -41,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             else {
                 angle += sessionStorage.getItem('turnsOfSecond') * 360;
             }
-            angle+=90;
             selectedElement.style.setProperty('--degree', `${angle}deg`);
         }
     }
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.removeEventListener('mousemove', drag);
         svg.removeEventListener('mouseup', endDrag);
         svg.removeEventListener('mouseleave', endDrag);
+        selectedElement.style.transitionDuration = '0.5s';
         selectedElement = null;
     }
 });

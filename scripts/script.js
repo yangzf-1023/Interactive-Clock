@@ -82,7 +82,7 @@ function changePerSecond() {
 
     // 如果时钟被暂停则重新计时
     if (isClockRestarted) {
-        let newStartTime = (current.getTime() / 1000)*1000+Number(sessionStorage.getItem('startTime'))%1000;
+        let newStartTime = current.getTime();
         sessionStorage.setItem('startTime', String(newStartTime-1000));
         isClockRestarted = false;
         console.log("Restart");

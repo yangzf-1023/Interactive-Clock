@@ -50,7 +50,8 @@ div#digit {
 
 .second_hand,
 #hour_hand,
-#minute_hand {
+#minute_hand
+{
     --degree: 0deg;
     transform-origin: 260px 260px;
     transition-property: all;
@@ -58,7 +59,6 @@ div#digit {
     transition-duration: .5s;
     transform: rotate(var(--degree));
 }
-
 div#widget p {
     position: relative;
 }
