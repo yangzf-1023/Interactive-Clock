@@ -59,6 +59,10 @@ div#digit {
     transform: rotate(var(--degree));
 }
 
+.hand:hover{
+    cursor: pointer;
+}
+
 div#widget p {
     position: relative;
 }

@@ -18,12 +18,71 @@ const minuteRegex = new RegExp("[0-5]\\d");
 const secondRegex = new RegExp("[0-5]\\d");
 const timeRegex = new RegExp("(?:[0-1]\\d|2[0-3]):[0-5]\\d:[0-5]\\d");
 
-// 下面是实现秒针转动（秒针由三部分组成，因此是一个整体）
-let secondHands = document.querySelectorAll('.second_hand');
+// 秒针转动（秒针由三部分组成，因此是一个整体）
+const secondHands = document.querySelectorAll('.second_hand');
 // 分针转动
-let minuteHand = document.querySelector('#minute_hand');
+const minuteHand = document.querySelector('#minute_hand');
 // 时针转动
-let hourHand = document.querySelector('#hour_hand');
+const hourHand = document.querySelector('#hour_hand');
+
+// 圆心
+const center = document.querySelector('#center');
+
+// 是否拖拽
+let isDragging = false;
+
+// 不管了，先设置秒针的转动
+
+// 秒针集体
+for (const secondHand of secondHands) {
+    // 鼠标按下
+    secondHand.addEventListener('mousedown', function () {
+        isDragging = true;
+
+        // 每次刷新都清除之前的轮数
+        sessionStorage.removeItem('turnsOfHour');
+        sessionStorage.removeItem('turnsOfSecond');
+        sessionStorage.removeItem('turnsOfHour');
+    });
+}
+
+document.addEventListener('mousemove', function (event) {
+    if (isDragging) {
+        // 坐标变化
+        let y = event.clientX - center.getBoundingClientRect().x;
+        let x = -(event.clientY - center.getBoundingClientRect().y);
+        // 转化为角度
+        let angle = 180 * Math.atan(y / x) / Math.PI;
+        if (x < 0) {
+            angle += 180;
+        }
+        else if (x > 0 && y < 0) {
+            angle += 360;
+        }
+        // 获取目前的角度
+        degree = Number(getComputedStyle(secondHands[0]).getPropertyValue('--degree').slice(0, -3));
+        
+        if (angle - degree > 180) {
+            angle -= 360;
+        }
+        else if (degree - (angle%360) > 180) {
+            angle += 360;
+        }
+        console.log('degree:',degree,"angle:",angle);
+        for (const hand of secondHands) {
+            hand.style.setProperty('--degree', `${angle}deg`);
+        }
+        // console.log(degree);
+    }
+});
+
+document.addEventListener('mouseup', function () {
+    isDragging = false;
+});
+
+
+
+
 
 
 // 点击设置
@@ -43,7 +102,7 @@ setButton.addEventListener('click', function () {
         let startTime = new Date();
         sessionStorage.setItem('startTime', String(startTime.getTime()));
     }
-    else{
+    else {
         alert("输入不合法！");
     }
     // 清空文本框
@@ -58,6 +117,9 @@ resetButton.addEventListener('click', function () {
 })
 
 function changePerSecond() {
+    if (isDragging) {
+        return;
+    }
     // 默认时间是当前时间
     let current = new Date();
     // 如果设置了时间
@@ -119,13 +181,10 @@ function changePerSecond() {
     turnsOfHour = Number(sessionStorage.getItem('turnsOfHour'));
 
     // rotate的角度必须是保证单调递增的，一旦减小就会逆时针旋转
-
     for (const item of secondHands) {
         item.style.setProperty('--degree', `${angleOfSecond + 360 * turnsOfSecond}deg`);
     }
-
     minuteHand.style.setProperty('--degree', `${angleOfMinute + 360 * turnsOfMinute}deg`);
-
     hourHand.style.setProperty('--degree', `${angleOfHour + 360 * turnsOfHour}deg`);
 }
 
