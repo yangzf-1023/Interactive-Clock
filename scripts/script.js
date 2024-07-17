@@ -17,6 +17,7 @@ const hourRegex = new RegExp("[0-2][0-3]");
 const minuteRegex = new RegExp("[0-5][0-9]");
 const secondRegex = new RegExp("[0-5][0-9]");
 const timeRegex = new RegExp("[0-2][0-3]:[0-5][0-9]:[0-5][0-9]");
+// test
 
 // 点击设置
 setButton.addEventListener('click', function () {
