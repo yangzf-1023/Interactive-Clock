@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.removeEventListener('mouseup', endDrag);
         svg.removeEventListener('mouseleave', endDrag);
         selectedElement.style.transitionDuration = '0.5s';
+        secondHand.style.transitionDuration = "0.5s";
         selectedElement = null;
     }
 });
