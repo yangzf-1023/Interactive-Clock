@@ -50,6 +50,7 @@ setButton.addEventListener('click', function () {
 // 点击重置
 resetButton.addEventListener('click', function () {
     sessionStorage.removeItem('setTime');
+    sessionStorage.removeItem('pauseTime');
 })
 
 pauseButton.addEventListener('click', function () {
