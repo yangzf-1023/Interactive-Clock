@@ -77,8 +77,7 @@ pauseButton.addEventListener('click', function () {
         isClockRestarted = true;
     }
 })
-// let mem_current = 0;
-// let mem_delta_and_storage = 0;
+
 function changePerSecond() {
     // 停止时钟
     if (isClockPaused) {
@@ -120,11 +119,6 @@ function changePerSecond() {
 
         current = new Date(setTime.getTime() +500+ deltaTime - Number(sessionStorage.getItem('pauseTime')));
         
-        // // 调试代码
-        // console.log("current time:",current.getTime(), mem_current);
-        // mem_current = current.getTime();
-        // console.log("delta time:",deltaTime - Number(sessionStorage.getItem('pauseTime')), mem_delta_and_storage);
-        // mem_delta_and_storage = deltaTime - Number(sessionStorage.getItem('pauseTime'));
     }
     else {
         // 没有设置过时间
