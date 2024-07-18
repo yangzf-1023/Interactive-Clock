@@ -1,3 +1,7 @@
+
+
+let regex = new RegExp(':[0-5][0-9]$');
+
 document.addEventListener('DOMContentLoaded', () => {
     const svg = document.querySelector('svg');
     const centerGetter = document.querySelector('#centerGetter');
@@ -16,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let centerX, centerY;
 
     function startDrag(event) {
+
         selectedElement = event.target;
         if (selectedElement.id.indexOf("second_") === -1) {
             /* 不是秒针 */
@@ -30,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.addEventListener('mousemove', drag);
         svg.addEventListener('mouseup', endDrag);
         svg.addEventListener('mouseleave', endDrag);
+        // 清除之前的轮数
+        sessionStorage.removeItem('turnsOfHour');
+        sessionStorage.removeItem('turnsOfSecond');
+        sessionStorage.removeItem('turnsOfHour');
     }
 
     function drag(event) {
@@ -39,18 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const dx = mouseX - centerX;
             const dy = mouseY - centerY;
+            // angle是当前指针所在的角度
             let angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
-            console.log(dx, dy, angle);
 
-            // 这一段代码实际上是不影响的，因为动画时间为0
+            // 之前的角度有问题
+            if (angle <= 0) {
+                angle += 360;
+            }
+            // console.log(dx, dy, angle);
 
-            // if (selectedElement === minuteHand) {
-            //     angle += sessionStorage.getItem('turnsOfMinute') * 360;
-            // } else if (selectedElement === hourHand) {
-            //     angle += sessionStorage.getItem('turnsOfHour') * 360;
-            // } else {
-            //     angle += sessionStorage.getItem('turnsOfSecond') * 360;
-            // }
             if (selectedElement.id.indexOf("second_") === -1) {
                 /* 不是秒针 */
                 selectedElement.style.setProperty('--degree', `${angle}deg`);
@@ -58,10 +64,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 /* 是秒针，需要一次性改多个元素 */
                 secondHand.style.setProperty('--degree', `${angle}deg`);
             }
+            // 下面该设置时间了,暂且约定动某一个针不影响其他的
+            let second = secondPlace.value;
+            let minute = minutePlace.value;
+            let hour = hourPlace.value;
+
+            // 如果选中的是秒针
+            if (selectedElement.id.indexOf("second_") !== -1) {
+                let angleOfSecond = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
+                second = Math.ceil(60 * angleOfSecond / 360);
+                if (second < 10) {
+                    second = '0' + String(second);
+                } else {
+                    second = String(second);
+                }
+                secondPlace.value = second;
+            }
+            else if (selectedElement.id === 'minute_hand') {
+                let angleOfMinute = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
+                minute = Math.ceil(60 * angleOfMinute / 360);
+                if (minute < 10) {
+                    minute = '0' + String(minute);
+                } else {
+                    minute = String(minute);
+                }
+                minutePlace.value = minute;
+            }
+            else {
+                let angleOfHour = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
+                hour = Math.ceil(12 * angleOfHour / 360);
+                if (hour < 10) {
+                    hour = '0' + String(hour);
+                } else {
+                    hour = String(hour);
+                }
+                hourPlace.value = hour;
+            }
         }
     }
 
+    // 之前的逻辑是依据时间设置角度
+    // 现在如何放过来依据角度设置时间？
+    // 更新到setTime
+
     function endDrag() {
+        // 每松开一次
         svg.removeEventListener('mousemove', drag);
         svg.removeEventListener('mouseup', endDrag);
         svg.removeEventListener('mouseleave', endDrag);
