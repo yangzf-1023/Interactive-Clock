@@ -41,13 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const dy = mouseY - centerY;
             let angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
             console.log(dx, dy, angle);
-            if (selectedElement === minuteHand) {
-                angle += sessionStorage.getItem('turnsOfMinute') * 360;
-            } else if (selectedElement === hourHand) {
-                angle += sessionStorage.getItem('turnsOfHour') * 360;
-            } else {
-                angle += sessionStorage.getItem('turnsOfSecond') * 360;
-            }
+
+            // 这一段代码实际上是不影响的，因为动画时间为0
+
+            // if (selectedElement === minuteHand) {
+            //     angle += sessionStorage.getItem('turnsOfMinute') * 360;
+            // } else if (selectedElement === hourHand) {
+            //     angle += sessionStorage.getItem('turnsOfHour') * 360;
+            // } else {
+            //     angle += sessionStorage.getItem('turnsOfSecond') * 360;
+            // }
             if (selectedElement.id.indexOf("second_") === -1) {
                 /* 不是秒针 */
                 selectedElement.style.setProperty('--degree', `${angle}deg`);
