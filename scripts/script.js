@@ -6,9 +6,6 @@ sessionStorage.removeItem('turnsOfHour');
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
 const pauseButton = document.querySelector("input#pause");
-// 时间显示
-// const timeContent = document.querySelector("div#digit");
-const timeContent = document.querySelector("#time");
 // 设置时间的三个文本框
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
@@ -28,6 +25,8 @@ let hourHand = document.querySelector('#hour_hand');
 
 let isClockPaused = false;
 let isClockRestarted = false;
+// 是否是设置后的第一次
+let firstTimeAfterSet = false;
 
 // 点击设置
 setButton.addEventListener('click', function () {
@@ -37,53 +36,111 @@ setButton.addEventListener('click', function () {
     let setSecond = secondPlace.value;
     // 格式正确
     if (hourRegex.test(setHour) && secondRegex.test(setSecond) && minuteRegex.test(setMinute)) {
+        firstTimeAfterSet = true;
         // 存储时间
         sessionStorage.setItem('setTime', setHour + ":" + setMinute + ":" + setSecond);
         // 清除之前积攒的轮数
         sessionStorage.removeItem('turnsOfHour');
         sessionStorage.removeItem('turnsOfSecond');
         sessionStorage.removeItem('turnsOfHour');
-        let startTime = new Date();
-        sessionStorage.setItem('startTime', String(startTime.getTime()));
+        // 记录开始设置的时间
+        sessionStorage.setItem('startTime', String(Date.now()));
+        // 清除已经积累的暂停时间
+        sessionStorage.removeItem('pauseTime');
+    } else {
+        alert("输入非法！");
     }
-    else{
-        alert("输入不合法！");
-    }
-    // 清空文本框
-    hourPlace.value = "";
-    secondPlace.value = "";
-    minutePlace.value = "";
 })
 
 // 点击重置
 resetButton.addEventListener('click', function () {
+    // 清除之前积攒的轮数
+    sessionStorage.removeItem('turnsOfHour');
+    sessionStorage.removeItem('turnsOfSecond');
+    sessionStorage.removeItem('turnsOfHour');
+    // 清除设置的时间
     sessionStorage.removeItem('setTime');
+    // 清除积累的暂停时间
+    sessionStorage.removeItem('pauseTime');
 })
 
+// 暂停或继续
 pauseButton.addEventListener('click', function () {
+    // 更新暂停状态
     isClockPaused = !isClockPaused;
     if (isClockPaused) {
-    }
-    else {
+        pauseButton.value = "继续";
+        hourPlace.disabled = false;
+        minutePlace.disabled = false;
+        secondPlace.disabled = false;
+        // 起始的暂停时间
+        sessionStorage.setItem("startPause", String(Date.now()));
+    } else {
+        pauseButton.value = "暂停";
+        hourPlace.disabled = true;
+        minutePlace.disabled = true;
+        secondPlace.disabled = true;
+        isClockRestarted = true;
+        // 暂停的终止时间
+        sessionStorage.setItem('endPause', String(Date.now()));
     }
 })
+
 function changePerSecond() {
+    // 停止时钟
+    if (isClockPaused) {
+        return;
+    }
     // 默认时间是当前时间
-    let current = new Date();
+
+    let pauseTime = 0;
+    let current;
+
+    // 如果时钟被暂停则重新计时
+    if (isClockRestarted) {
+
+        // 结束暂停的时间
+        pauseTime = Number(sessionStorage.getItem('endPause')) - Number(sessionStorage.getItem('startPause'));
+        let accumulatePauseTime = sessionStorage.getItem('pauseTime');
+        if (!accumulatePauseTime) {
+            sessionStorage.setItem('pauseTime', String(pauseTime));
+        }
+        else {
+            sessionStorage.setItem('pauseTime', String(Number(accumulatePauseTime) + pauseTime));
+        }
+        isClockRestarted = false;
+    }
+
     // 如果设置了时间
     if (sessionStorage.getItem('setTime')) {
-        // 将开始时间转换为字符串格式(这里还需要进行修改啊！)
+        current = new Date();
+        let offset = current.getTime() % 1000;
+        // 将开始时间转换为字符串格式
         let setTime = new Date(current.toString().replace(timeRegex, sessionStorage.getItem('setTime')));
         // 首先确定时间差，秒形式
-        let deltaTime = current.getTime() - Number(sessionStorage.getItem('startTime'));
-        current = new Date(setTime.getTime() + deltaTime);
+        let deltaTime = Date.now() - Number(sessionStorage.getItem('startTime'));
+        // 如果是第一次
+        if (firstTimeAfterSet) {
+            // 如果是第一次，补齐差的时间
+            sessionStorage.setItem('pauseTime', String(deltaTime));
+            firstTimeAfterSet = false;
+        }
+        // 更新后的时间
+        current = new Date(setTime.getTime() + offset + deltaTime - Number(sessionStorage.getItem('pauseTime')));
     }
-    // 更新时间显示
-    timeContent.textContent = current.toLocaleTimeString();
+    else {
+        // 没有设置过时间
+        current = new Date(Date.now() - Number(sessionStorage.getItem('pauseTime')));
+    }
+
     // 更新初始内容
-    hourPlace.placeholder = timeContent.textContent.slice(0, 2);
-    minutePlace.placeholder = timeContent.textContent.slice(3, 5);
-    secondPlace.placeholder = timeContent.textContent.slice(6, 8);
+    let timeString = current.toLocaleTimeString();
+    hourPlace.placeholder = timeString.slice(0, 2);
+    hourPlace.value = timeString.slice(0, 2);
+    minutePlace.placeholder = timeString.slice(3, 5);
+    minutePlace.value = timeString.slice(3, 5);
+    secondPlace.placeholder = timeString.slice(6, 8);
+    secondPlace.value = timeString.slice(6, 8);
 
     // 获取积累的圈数
     if (!sessionStorage.getItem('turnsOfSecond')) {
@@ -133,10 +190,11 @@ function changePerSecond() {
     for (const item of secondHands) {
         item.style.setProperty('--degree', `${angleOfSecond + 360 * turnsOfSecond}deg`);
     }
-
     minuteHand.style.setProperty('--degree', `${angleOfMinute + 360 * turnsOfMinute}deg`);
-
     hourHand.style.setProperty('--degree', `${angleOfHour + 360 * turnsOfHour}deg`);
+    const degreeValue = window.getComputedStyle(minuteHand).getPropertyValue('--degree');
+
+    // console.log(`The degree value is: ${degreeValue}`);
 }
 
 // 两次调用防止刷新
