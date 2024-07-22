@@ -40,3 +40,11 @@ div#widget p {
     flex-direction: row;
     justify-content: center;
 }
+
+.clockStopped {
+    cursor: default;
+}
+
+.clockNotStopped {
+    cursor: not-allowed;
+}

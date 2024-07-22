@@ -1,5 +1,3 @@
-
-
 let regex = new RegExp(':[0-5][0-9]$');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,6 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let centerX, centerY;
 
     function startDrag(event) {
+        /* 禁用时不响应鼠标事件 */
+        if (!isClockPaused) {
+            svg.removeEventListener('mousemove', drag);
+            svg.removeEventListener('mouseup', endDrag);
+            svg.removeEventListener('mouseleave', endDrag);
+            return;
+        }
 
         selectedElement = event.target;
         if (selectedElement.id.indexOf("second_") === -1) {
@@ -75,14 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 使用round更符合视觉直观
                 // 使用%60是为了保证不超过60
                 second = Math.round(60 * angleOfSecond / 360) % 60;
-                secondPlace.value =  String(second).padStart(2, '0');
-            }
-            else if (selectedElement.id === 'minute_hand') {
+                secondPlace.value = String(second).padStart(2, '0');
+            } else if (selectedElement.id === 'minute_hand') {
                 let angleOfMinute = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
                 minute = Math.round(60 * angleOfMinute / 360) % 60;
                 minutePlace.value = String(minute).padStart(2, '0');
-            }
-            else {
+            } else {
                 let angleOfHour = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
                 hour = Math.round(12 * angleOfHour / 360);
                 hourPlace.value = String(hour).padStart(2, '0');

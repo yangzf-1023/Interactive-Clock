@@ -2,6 +2,9 @@
 sessionStorage.removeItem('turnsOfHour');
 sessionStorage.removeItem('turnsOfSecond');
 sessionStorage.removeItem('turnsOfHour');
+
+const svgElement = document.getElementById("interactiveClock");
+
 // 两个按钮的常值引用
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
@@ -75,6 +78,9 @@ pauseButton.addEventListener('click', function () {
         secondPlace.disabled = false;
         // 起始的暂停时间
         sessionStorage.setItem("startPause", String(Date.now()));
+
+        svgElement.classList.add("clockStopped");
+        svgElement.classList.remove("clockNotStopped");
     } else {
         pauseButton.value = "暂停";
         hourPlace.disabled = true;
@@ -83,6 +89,9 @@ pauseButton.addEventListener('click', function () {
         isClockRestarted = true;
         // 暂停的终止时间
         sessionStorage.setItem('endPause', String(Date.now()));
+
+        svgElement.classList.add("clockNotStopped");
+        svgElement.classList.remove("clockStopped");
     }
 })
 
