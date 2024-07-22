@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedElement = null;
     let centerX, centerY;
 
-    let lastSecond = 0xfefefefe, lastMinute = 0xfefefefe;
+    let lastNeedleState = {lastSecond: 0xfefefefe, lastMinute: 0xfefefefe};
 
     function startDrag(event) {
         /* 禁用时不响应鼠标事件 */
@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.removeItem('turnsOfSecond');
         sessionStorage.removeItem('turnsOfHour');
 
-        lastSecond = Number(getComputedStyle(secondHand).getPropertyValue('--degree').slice(0, -3));
-        lastMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
+        lastNeedleState.lastSecond = Number(getComputedStyle(secondHand).getPropertyValue('--degree').slice(0, -3));
+        lastNeedleState.lastMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
     }
 
     function drag(event) {
@@ -83,29 +83,44 @@ document.addEventListener('DOMContentLoaded', () => {
             let angleOfMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
             let angleOfHour = Number(getComputedStyle(hourHand).getPropertyValue('--degree').slice(0, -3));
 
-            // 秒针-分针联动
-            if (selectedElement.id.indexOf("second_") !== -1) {
-                if (lastSecond !== 0xfefefefe) {
+            let joint = (lastStateObj, whichState) => {
+                let lastState = lastStateObj[whichState];
+                let currentState = (whichState === "lastSecond" ? angleOfSecond : angleOfMinute);
+                if (lastState !== 0xfefefefe) {
                     /* 这里的尺度不能太大 */
-                    let delta = angleOfSecond - lastSecond;
-                    if (angleOfSecond <= 15 && lastSecond >= 345) {
+                    let delta = currentState - lastState;
+                    if (currentState <= 15 && lastState >= 345) {
                         delta += 360;
-                    } else if (angleOfSecond >= 345 && lastSecond <= 15) {
+                    } else if (currentState >= 345 && lastState <= 15) {
                         delta -= 360;
                     }
-                    /* 更新分针 */
-                    angleOfMinute += delta / 60;
-                    minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
-                    lastSecond += delta;
-                    while (lastSecond > 360) {
-                        lastSecond -= 360;
+                    if (whichState === "lastSecond") {
+                        /* 更新分针 */
+                        angleOfMinute += delta / 60;
+                    } else if (whichState === "lastMinute") {
+                        /* 更新时针 */
+                        angleOfHour += delta / 60 * 5;
                     }
-                    while (lastSecond < 0) {
-                        lastSecond += 360;
+                    minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
+                    hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
+
+                    lastStateObj[whichState] += delta;
+                    while (lastStateObj[whichState] > 360) {
+                        lastStateObj[whichState] -= 360;
+                    }
+                    while (lastStateObj[whichState] < 0) {
+                        lastStateObj[whichState] += 360;
                     }
                 } else {
-                    lastSecond = angleOfSecond;
+                    lastStateObj[whichState] = currentState;
                 }
+            };
+
+            // 秒针-分针联动
+            if (selectedElement.id.indexOf("second_") !== -1) {
+                joint(lastNeedleState, "lastSecond");
+            } else if (selectedElement.id.indexOf("minute_") !== -1) {
+                joint(lastNeedleState, "lastMinute");
             }
 
             // 使用round更符合视觉直观，使用floor是为了保证逻辑时间的正确
