@@ -72,33 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
             // 如果选中的是秒针
             if (selectedElement.id.indexOf("second_") !== -1) {
                 let angleOfSecond = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
-                second = Math.ceil(60 * angleOfSecond / 360);
-                if (second < 10) {
-                    second = '0' + String(second);
-                } else {
-                    second = String(second);
-                }
-                secondPlace.value = second;
+                // 使用round更符合视觉直观
+                // 使用%60是为了保证不超过60
+                second = Math.round(60 * angleOfSecond / 360) % 60;
+                secondPlace.value =  String(second).padStart(2, '0');
             }
             else if (selectedElement.id === 'minute_hand') {
                 let angleOfMinute = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
-                minute = Math.ceil(60 * angleOfMinute / 360);
-                if (minute < 10) {
-                    minute = '0' + String(minute);
-                } else {
-                    minute = String(minute);
-                }
-                minutePlace.value = minute;
+                minute = Math.round(60 * angleOfMinute / 360) % 60;
+                minutePlace.value = String(minute).padStart(2, '0');
             }
             else {
                 let angleOfHour = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
-                hour = Math.ceil(12 * angleOfHour / 360);
-                if (hour < 10) {
-                    hour = '0' + String(hour);
-                } else {
-                    hour = String(hour);
-                }
-                hourPlace.value = hour;
+                hour = Math.round(12 * angleOfHour / 360);
+                hourPlace.value = String(hour).padStart(2, '0');
             }
         }
     }
