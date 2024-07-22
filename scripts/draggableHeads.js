@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.removeItem('turnsOfSecond');
         sessionStorage.removeItem('turnsOfHour');
 
-        lastSecond = 0xfefefefe;
-        lastMinute = 0xfefefefe;
+        lastSecond = Number(getComputedStyle(secondHand).getPropertyValue('--degree').slice(0, -3));
+        lastMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
     }
 
     function drag(event) {
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let angleOfMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
             let angleOfHour = Number(getComputedStyle(hourHand).getPropertyValue('--degree').slice(0, -3));
 
-            // 如果选中的是秒针
+            // 秒针-分针联动
             if (selectedElement.id.indexOf("second_") !== -1) {
                 if (lastSecond !== 0xfefefefe) {
                     /* 这里的尺度不能太大 */
@@ -94,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         delta -= 360;
                     }
                     /* 更新分针 */
-                    minuteHand.style.setProperty('--degree', `${angleOfMinute + delta / 60}deg`);
+                    angleOfMinute += delta / 60;
+                    minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
                     lastSecond += delta;
                     while (lastSecond > 360) {
                         lastSecond -= 360;
@@ -105,17 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     lastSecond = angleOfSecond;
                 }
-                // 使用round更符合视觉直观
-                // 使用%60是为了保证不超过60
-                second = Math.round(60 * angleOfSecond / 360) % 60;
-                secondPlace.value = String(second).padStart(2, '0');
-            } else if (selectedElement.id === 'minute_hand') {
-                minute = Math.round(60 * angleOfMinute / 360) % 60;
-                minutePlace.value = String(minute).padStart(2, '0');
-            } else {
-                hour = Math.round(12 * angleOfHour / 360);
-                hourPlace.value = String(hour).padStart(2, '0');
             }
+
+            // 使用round更符合视觉直观，使用floor是为了保证逻辑时间的正确
+            // 使用%60是为了保证不超过60
+            second = Math.floor(60 * angleOfSecond / 360) % 60;
+            secondPlace.value = String(second).padStart(2, '0');
+            minute = Math.floor(60 * angleOfMinute / 360) % 60;
+            minutePlace.value = String(minute).padStart(2, '0');
+            hour = Math.floor(12 * angleOfHour / 360);
+            hourPlace.value = String(hour).padStart(2, '0');
         }
     }
 
