@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedElement = null;
     let centerX, centerY;
 
+    let lastSecond = 0xfefefefe, lastMinute = 0xfefefefe;
+
     function startDrag(event) {
         /* 禁用时不响应鼠标事件 */
         if (!isClockPaused) {
@@ -44,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.removeItem('turnsOfHour');
         sessionStorage.removeItem('turnsOfSecond');
         sessionStorage.removeItem('turnsOfHour');
+
+        lastSecond = 0xfefefefe;
+        lastMinute = 0xfefefefe;
     }
 
     function drag(event) {
@@ -66,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 /* 不是秒针 */
                 selectedElement.style.setProperty('--degree', `${angle}deg`);
             } else {
-                /* 是秒针，需要一次性改多个元素 */
+                /* 是秒针，需要一次性改多个元素，selectedElement可能只是一个小组件，没有资格代表整个秒针 */
                 secondHand.style.setProperty('--degree', `${angle}deg`);
             }
             // 下面该设置时间了,暂且约定动某一个针不影响其他的
@@ -74,19 +79,40 @@ document.addEventListener('DOMContentLoaded', () => {
             let minute = minutePlace.value;
             let hour = hourPlace.value;
 
+            let angleOfSecond = Number(getComputedStyle(secondHand).getPropertyValue('--degree').slice(0, -3));
+            let angleOfMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
+            let angleOfHour = Number(getComputedStyle(hourHand).getPropertyValue('--degree').slice(0, -3));
+
             // 如果选中的是秒针
             if (selectedElement.id.indexOf("second_") !== -1) {
-                let angleOfSecond = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
+                if (lastSecond !== 0xfefefefe) {
+                    /* 这里的尺度不能太大 */
+                    let delta = angleOfSecond - lastSecond;
+                    if (angleOfSecond <= 15 && lastSecond >= 345) {
+                        delta += 360;
+                    } else if (angleOfSecond >= 345 && lastSecond <= 15) {
+                        delta -= 360;
+                    }
+                    /* 更新分针 */
+                    minuteHand.style.setProperty('--degree', `${angleOfMinute + delta / 60}deg`);
+                    lastSecond += delta;
+                    while (lastSecond > 360) {
+                        lastSecond -= 360;
+                    }
+                    while (lastSecond < 0) {
+                        lastSecond += 360;
+                    }
+                } else {
+                    lastSecond = angleOfSecond;
+                }
                 // 使用round更符合视觉直观
                 // 使用%60是为了保证不超过60
                 second = Math.round(60 * angleOfSecond / 360) % 60;
                 secondPlace.value = String(second).padStart(2, '0');
             } else if (selectedElement.id === 'minute_hand') {
-                let angleOfMinute = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
                 minute = Math.round(60 * angleOfMinute / 360) % 60;
                 minutePlace.value = String(minute).padStart(2, '0');
             } else {
-                let angleOfHour = Number(getComputedStyle(selectedElement).getPropertyValue('--degree').slice(0, -3));
                 hour = Math.round(12 * angleOfHour / 360);
                 hourPlace.value = String(hour).padStart(2, '0');
             }
