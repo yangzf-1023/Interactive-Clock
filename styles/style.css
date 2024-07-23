@@ -4,11 +4,28 @@ body {
     position: relative;
 }
 
+.container-fluid {
+    padding: 0;
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
 svg {
-    width: 520px;
+    width: 100%;
+    max-width: 520px;
     height: auto;
     max-height: 520px;
     margin: 0 auto;
+}
+
+#alarmList {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
 div#digit {
@@ -47,4 +64,34 @@ div#widget p {
 
 .clockNotStopped {
     cursor: not-allowed;
+}
+
+#alarmList {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.list-group-item-action {
+    border-left: none;
+    border-right: none;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.list-group-item-action.active {
+    color: #fff;
+    background-color: #28a745; /* 成功状态的绿色 */
+}
+
+.close {
+    color: #aaa;
+    font-size: 1.5em;
+    cursor: pointer;
+    float: right;
+}
+
+.close:hover {
+    color: #666;
 }
