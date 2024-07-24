@@ -136,21 +136,25 @@ setAlarmButton.addEventListener('click', function () {
     }
 });
 
-// 取消闹钟
-cancelAlarmButton.addEventListener('click', function () {
-    var audio = document.getElementById('alarmSound');
-    audio.pause();
-    audio.currentTime = 0;
-});
-
 // 触发特定闹钟提醒
 function triggerAlarm(alarmTimeIndex) {
     const alarmTime = alarmTimes[alarmTimeIndex];
     // 播放音频
     var audio = document.getElementById('alarmSound');
     audio.play();
-    // // 显示提醒信息
-    // alert(`闹钟 ${alarmTimeIndex + 1} 响起！时间：${new Date(alarmTime.dateTime).toLocaleTimeString()}`);
+    // 获取模态对话框元素
+    var dialog = document.querySelector('.dialog-component');
+    // 显示模态对话框
+    dialog.style.display = 'block';
+    // 更新模态对话框中的提醒信息
+    document.querySelector('.dialog-container').textContent = `闹钟${alarmTimeIndex + 1}响起！时间：${new Date(alarmTime.dateTime).toLocaleTimeString()}`;
+    // 为关闭按钮添加事件监听器
+    document.getElementById('dialogSureBtn').addEventListener('click', function() {
+        // 隐藏模态对话框
+        dialog.style.display = 'none';
+        // 停止音频
+        audio.pause();
+    });
     alarmTimes[alarmTimeIndex].active = false;
     updateAlarmDisplay();
 }
@@ -192,11 +196,14 @@ function updateAlarmDisplay() {
 
 // 更新时钟时检查闹钟
 function checkAlarm() {
-    const now = new Date();
+    const nowHour = parseInt(hourPlace.value);
+    const nowMinute = parseInt(minutePlace.value);
+    const nowSecond = parseInt(secondPlace.value);
     // 复制 alarmTimes 数组以避免直接修改原始数组
     let currentAlarmTimes = [...alarmTimes];
     currentAlarmTimes.forEach((alarmTime, index) => {
-        if (alarmTime.active && now.getHours() === alarmTime.hour && now.getMinutes() === alarmTime.minute) {
+        // 对秒数进行了限制
+        if (alarmTime.active && nowHour === alarmTime.hour && nowMinute === alarmTime.minute && nowSecond <= 10) {
             triggerAlarm(index); // 触发提醒
         }
     });
