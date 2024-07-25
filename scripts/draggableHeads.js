@@ -130,6 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         angleOfHour += delta / 12;
                     }
 
+                    while(angleOfHour < 0){
+                        angleOfHour += 360;
+                    }
+                    while(angleOfHour > 360){
+                        angleOfHour -=360;
+                    }
+                    while(angleOfMinute < 0){
+                        angleOfMinute += 360;
+                    }
+                    while(angleOfMinute > 360){
+                        angleOfMinute -=360;
+                    }
+                    while(angleOfSecond < 0){
+                        angleOfSecond += 360;
+                    }
+                    while(angleOfSecond > 360){
+                        angleOfSecond -=360;
+                    }
 
                     minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
                     hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
@@ -162,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             secondPlace.value = String(second).padStart(2, '0');
             minute = Math.floor(60 * angleOfMinute / 360) % 60;
             minutePlace.value = String(minute).padStart(2, '0');
+            // 这里涉及24小时制和12小时制的问题
             hour = Math.floor(12 * angleOfHour / 360) % 24;
             hourPlace.value = String(hour).padStart(2, '0');
         }
