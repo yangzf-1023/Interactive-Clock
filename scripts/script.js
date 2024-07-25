@@ -34,7 +34,9 @@ let minuteHand = document.querySelector('#minute_hand');
 // 时针转动
 let hourHand = document.querySelector('#hour_hand');
 
+// 时钟是否被暂停
 let isClockPaused = false;
+// 是否被重启
 let isClockRestarted = false;
 // 是否是设置后的第一次
 let firstTimeAfterSet = false;
@@ -80,6 +82,7 @@ pauseButton.addEventListener('click', function () {
     // 更新暂停状态
     isClockPaused = !isClockPaused;
     if (isClockPaused) {
+        // 已经暂停了
         pauseButton.value = "继续";
         hourPlace.disabled = false;
         minutePlace.disabled = false;

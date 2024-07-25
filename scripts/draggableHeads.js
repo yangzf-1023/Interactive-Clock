@@ -46,8 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.removeItem('turnsOfHour');
         sessionStorage.removeItem('turnsOfSecond');
         sessionStorage.removeItem('turnsOfHour');
-
+        // 秒针的旋转角度
         lastNeedleState.lastSecond = Number(getComputedStyle(secondHand).getPropertyValue('--degree').slice(0, -3));
+        // 分针的旋转角度
         lastNeedleState.lastMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
     }
 
@@ -83,24 +84,39 @@ document.addEventListener('DOMContentLoaded', () => {
             let angleOfMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
             let angleOfHour = Number(getComputedStyle(hourHand).getPropertyValue('--degree').slice(0, -3));
 
+            // 下面要看懂这个函数
             let joint = (lastStateObj, whichState) => {
+                // 上一秒或者上一分钟是多少
                 let lastState = lastStateObj[whichState];
+                // 当前时钟是多少
                 let currentState = (whichState === "lastSecond" ? angleOfSecond : angleOfMinute);
+                // console.log("currentState:",currentState);
+
+                // 非初态
                 if (lastState !== 0xfefefefe) {
                     /* 这里的尺度不能太大 */
                     let delta = currentState - lastState;
+
+                    // 正向绕过一圈
                     if (currentState <= 15 && lastState >= 345) {
                         delta += 360;
-                    } else if (currentState >= 345 && lastState <= 15) {
+                    } 
+                    // 逆向绕过一圈
+                    else if (currentState >= 345 && lastState <= 15) {
                         delta -= 360;
                     }
+
                     if (whichState === "lastSecond") {
                         /* 更新分针 */
                         angleOfMinute += delta / 60;
                     } else if (whichState === "lastMinute") {
                         /* 更新时针 */
-                        angleOfHour += delta / 60 * 5;
+                        angleOfHour += delta / 12;
                     }
+
+                    // 这里的角度出现负值了怎么办
+
+
                     minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
                     hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
 
@@ -117,9 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // 秒针-分针联动
+
+            // 动的是秒针
             if (selectedElement.id.indexOf("second_") !== -1) {
                 joint(lastNeedleState, "lastSecond");
-            } else if (selectedElement.id.indexOf("minute_") !== -1) {
+            } 
+            else if (selectedElement.id.indexOf("minute_") !== -1) {
                 joint(lastNeedleState, "lastMinute");
             }
 
