@@ -174,7 +174,7 @@ function updateAlarmDisplay() {
         let alarmTimeText = `${alarm.hour.toString().padStart(2, '0')}:${alarm.minute.toString().padStart(2, '0')}`;
         // 创建开启/关闭按钮
         let toggleButton = document.createElement('button');
-        toggleButton.className = `btn ${alarm.active ? 'btn-success' : 'btn-danger'}`;
+        toggleButton.className = `btn alarmItemBtn ${alarm.active ? 'btn-outline-success' : 'btn-outline-danger'}`;
         toggleButton.textContent = alarm.active ? '已开启' : '已关闭';
         // 为切换按钮添加事件监听器
         toggleButton.addEventListener('click', function() {

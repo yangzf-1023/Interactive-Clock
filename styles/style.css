@@ -166,3 +166,7 @@ div#widget p {
     flex-direction: column;
     justify-content: space-between;
 }
+
+.alarmItemBtn {
+    margin-left: 20px;
+}
