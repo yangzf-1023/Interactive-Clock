@@ -184,3 +184,9 @@ div#widget p {
       width: 90%;
     }
 }
+
+.alarmContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

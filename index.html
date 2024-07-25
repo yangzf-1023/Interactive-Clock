@@ -29,7 +29,7 @@
 
                     <!-- 分针 -->
                     <path id="minute_hand" fill="grey"
-                        d="M 260 20 L 270 50 L 270 290 L 250 290 L 250 50 L 260 20 Z"></path>
+                          d="M 260 20 L 270 50 L 270 290 L 250 290 L 250 50 L 260 20 Z"></path>
                     <!-- 时针 -->
                     <path id="hour_hand" fill="black" d="M 260 60 L 270 80 L 270 280 L 250 280 L 250 80 L 260 60 Z">
                     </path>
@@ -54,24 +54,25 @@
             <div class="row justify-content-center mt-5">
                 <div class="col-md-2 mt-2">
                     <form class="form-floating">
-                        <input type="text" class="form-control" maxlength="2" minlength="2" id="hour_place" inputmode="numeric"
-                            pattern="(?:[0-1][0-9]|2[0-3])" disabled>
+                        <input type="text" class="form-control" maxlength="2" minlength="2" id="hour_place"
+                               inputmode="numeric"
+                               pattern="(?:[0-1][0-9]|2[0-3])" disabled>
                         <label for="hour_place">Hour:</label>
                     </form>
                 </div>
                 <div class="col-md-2 mt-2">
                     <form class="form-floating">
                         <input type="text" class="form-control" maxlength="2" minlength="2" id="minute_place"
-                            inputmode="numeric"
-                            pattern="[0-5][0-9]" disabled>
+                               inputmode="numeric"
+                               pattern="[0-5][0-9]" disabled>
                         <label for="minute_place">Minute:</label>
                     </form>
                 </div>
                 <div class="col-md-2 mt-2">
                     <form class="form-floating">
                         <input type="text" class="form-control" maxlength="2" minlength="2" id="second_place"
-                            inputmode="numeric"
-                            pattern="[0-5][0-9]" disabled>
+                               inputmode="numeric"
+                               pattern="[0-5][0-9]" disabled>
                         <label for="second_place">Second:</label>
                     </form>
                 </div>
@@ -89,7 +90,7 @@
             </div>
         </div>
         <!-- 侧边栏区域 -->
-        <div class="col-md-3">
+        <div class="col-md-3 alarmContainer">
             <div class="mt-5">
                 <h3>我的闹钟</h3>
                 <div id="alarmList" class="list-group">
@@ -97,13 +98,31 @@
                 </div>
             </div>
             <!-- 闹钟设置控件 -->
-            <div class="mt-5">
-                <h3>新增闹钟</h3>
-                <div class="form-group">
-                    <input type="text" class="form-control" maxlength="2" minlength="2" id="alarm_hour" inputmode="numeric" pattern="(?:[0-1][0-9]|2[0-3])" placeholder="Alarm Hour">
-                    <input type="text" class="form-control" maxlength="2" minlength="2" id="alarm_minute" inputmode="numeric" pattern="[0-5][0-9]" placeholder="Alarm Minute">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h5 class="card-title">添加闹钟</h5>
+                    <div class="row mt-3">
+                        <div class="col-md-6" style="padding: 0 12px 0 0">
+                            <form class="form-floating">
+                                <input type="text" class="form-control" maxlength="2" minlength="2" id="alarm_hour"
+                                       inputmode="numeric"
+                                       pattern="(?:[0-1][0-9]|2[0-3])">
+                                <label for="hour_place">Alarm Hour</label>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form class="form-floating">
+                                <input type="text" class="form-control" maxlength="2" minlength="2" id="alarm_minute"
+                                       inputmode="numeric"
+                                       pattern="[0-5][0-9]">
+                                <label for="hour_place">Alarm Minute</label>
+                            </form>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-success myBtn" id="set_alarm" style="width: 40%">
+                        设置闹钟
+                    </button>
                 </div>
-                <button type="button" class="btn btn-success myBtn" id="set_alarm">设置闹钟</button>
             </div>
         </div>
     </div>
@@ -121,8 +140,8 @@
         <!-- <button id="dialogCloseBtn" class="dialog-close-btn"></button> -->
         <div class="dialog-container">闹钟响起了！</div>
         <div class="dialog-footer">
-          <!-- <button id="dialogCancelBtn">取消</button> -->
-          <button id="dialogSureBtn">确认</button>
+            <!-- <button id="dialogCancelBtn">取消</button> -->
+            <button id="dialogSureBtn">确认</button>
         </div>
     </div>
 </dialog>
