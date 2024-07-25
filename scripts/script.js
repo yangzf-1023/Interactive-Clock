@@ -13,11 +13,19 @@ const pauseButton = document.querySelector("input#pause");
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
 const secondPlace = document.querySelector('#second_place');
+// 存储所有闹钟时间的数组
+let alarmTimes = [];
+// 获取闹钟输入框和按钮
+const alarmHour = document.querySelector('#alarm_hour');
+const alarmMinute = document.querySelector('#alarm_minute');
+const setAlarmButton = document.querySelector('#set_alarm');
+const cancelAlarmButton = document.querySelector('#cancel_alarm');
 // 正则表达式
 const hourRegex = new RegExp("[0-1]\\d|2[0-3]");
 const minuteRegex = new RegExp("[0-5]\\d");
 const secondRegex = new RegExp("[0-5]\\d");
 const timeRegex = new RegExp("(?:[0-1]\\d|2[0-3]):[0-5]\\d:[0-5]\\d");
+const alarmRegex = new RegExp("(?:[0-1]\\d|2[0-3]):[0-5]\\d");
 
 // 下面是实现秒针转动（秒针由三部分组成，因此是一个整体）
 let secondHands = document.querySelectorAll('.second_hand');
@@ -95,11 +103,121 @@ pauseButton.addEventListener('click', function () {
     }
 })
 
+setAlarmButton.addEventListener('click', function () {
+    let alarmHourValue = alarmHour.value;
+    let alarmMinuteValue = alarmMinute.value;
+    if (alarmRegex.test(alarmHourValue + ":" + alarmMinuteValue)) {
+        let alarmTime = {
+            hour: parseInt(alarmHourValue),
+            minute: parseInt(alarmMinuteValue),
+            active: true, // 闹钟默认为开启状态
+            dateTime: new Date().setHours(parseInt(alarmHourValue), parseInt(alarmMinuteValue), 0) // 设置具体时间
+        };
+
+        // 检查这个时间是否已经设置为闹钟
+        let existingAlarm = alarmTimes.find(alarm => 
+            alarm.hour === alarmTime.hour && alarm.minute === alarmTime.minute
+        );
+
+        if (!existingAlarm) {
+            // 如果没有重复的闹钟，添加到列表
+            alarmTimes.push(alarmTime);
+            updateAlarmDisplay(); // 更新显示
+            alarmHour.value = "";
+            alarmMinute.value = "";
+            // console.log('Alarm set at:', new Date(alarmTime.dateTime).toLocaleTimeString());
+        } else {
+            // 如果存在重复的闹钟，提醒用户
+            // console.log('This time already has an alarm.');
+            alert("已设置相同时间的闹钟！");
+        }
+    } else {
+        alert("输入非法！");
+    }
+});
+
+// 触发特定闹钟提醒
+function triggerAlarm(alarmTimeIndex) {
+    const alarmTime = alarmTimes[alarmTimeIndex];
+    // 播放音频
+    var audio = document.getElementById('alarmSound');
+    audio.play();
+    // 获取模态对话框元素
+    var dialog = document.querySelector('.dialog-component');
+    // 显示模态对话框
+    dialog.style.display = 'block';
+    // 更新模态对话框中的提醒信息
+    document.querySelector('.dialog-container').textContent = `闹钟${alarmTimeIndex + 1}响起！时间：${new Date(alarmTime.dateTime).toLocaleTimeString()}`;
+    // 为关闭按钮添加事件监听器
+    document.getElementById('dialogSureBtn').addEventListener('click', function() {
+        // 隐藏模态对话框
+        dialog.style.display = 'none';
+        // 停止音频
+        audio.pause();
+    });
+    alarmTimes[alarmTimeIndex].active = false;
+    updateAlarmDisplay();
+}
+
+function updateAlarmDisplay() {
+    const alarmList = document.getElementById('alarmList');
+    alarmList.innerHTML = ''; // 清空现有闹钟项
+
+    alarmTimes.forEach((alarm, index) => {
+        let item = document.createElement('li');
+        item.className = 'list-group-item list-group-item-action';
+        item.id = 'alarmItem_' + index;
+        // 格式化时间显示
+        let alarmTimeText = `${alarm.hour.toString().padStart(2, '0')}:${alarm.minute.toString().padStart(2, '0')}`;
+        // 创建开启/关闭按钮
+        let toggleButton = document.createElement('button');
+        toggleButton.className = `btn ${alarm.active ? 'btn-success' : 'btn-danger'}`;
+        toggleButton.textContent = alarm.active ? '已开启' : '已关闭';
+        // 为切换按钮添加事件监听器
+        toggleButton.addEventListener('click', function() {
+            alarm.active = !alarm.active;
+            updateAlarmDisplay(); // 更新闹钟显示状态
+        });
+        // 创建删除按钮
+        const closeButton = document.createElement('span');
+        closeButton.innerHTML = '&times;';
+        closeButton.className = 'close';
+        closeButton.onclick = function() {
+            // 从数组和显示中移除这个闹钟
+            alarmTimes.splice(index, 1);
+            updateAlarmDisplay();
+        };
+        item.innerHTML = `闹钟${index + 1}: <span class="alarmTime">${alarmTimeText}</span> `;
+        item.appendChild(toggleButton);
+        item.appendChild(closeButton);
+        alarmList.appendChild(item);
+    });
+}
+
+// 更新时钟时检查闹钟
+function checkAlarm() {
+    const nowHour = parseInt(hourPlace.value);
+    const nowMinute = parseInt(minutePlace.value);
+    const nowSecond = parseInt(secondPlace.value);
+    // 复制 alarmTimes 数组以避免直接修改原始数组
+    let currentAlarmTimes = [...alarmTimes];
+    currentAlarmTimes.forEach((alarmTime, index) => {
+        // 对秒数进行了限制
+        if (alarmTime.active && nowHour === alarmTime.hour && nowMinute === alarmTime.minute && nowSecond <= 10) {
+            triggerAlarm(index); // 触发提醒
+        }
+    });
+}
+
 function changePerSecond() {
     // 停止时钟
     if (isClockPaused) {
         return;
     }
+
+    // 检查闹钟
+    checkAlarm();
+
     // 默认时间是当前时间
 
     let pauseTime = 0;

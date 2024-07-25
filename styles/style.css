@@ -4,11 +4,35 @@ body {
     position: relative;
 }
 
+.container-fluid {
+    padding: 0;
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
 svg {
-    width: 520px;
+    width: 100%;
+    max-width: 520px;
     height: auto;
     max-height: 520px;
     margin: 0 auto;
+}
+
+#alarmList {
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.alarm-settings {
+    /* 新增样式，用于设置控件的布局 */
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #ddd; /* 分隔线 */
 }
 
 div#digit {
@@ -47,4 +71,116 @@ div#widget p {
 
 .clockNotStopped {
     cursor: not-allowed;
+}
+
+.list-group-item-action {
+    border-left: none;
+    border-right: none;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.list-group-item-action.active {
+    color: #fff;
+    background-color: #28a745; /* 成功状态的绿色 */
+}
+
+.close {
+    color: #aaa;
+    font-size: 1.5em;
+    cursor: pointer;
+    float: right;
+}
+
+.close:hover {
+    color: #666;
+}
+
+/* 模态对话框样式 */
+.dialog-component {
+    display: none; /* 默认隐藏 */
+    position: fixed; /* 固定定位，相对于浏览器窗口 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* max-width: 400px; */
+    /* text-align: center; */
+    z-index: 1000; /* 确保模态框在页面其他元素之上 */
+}
+
+.dialog-component.show {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+  
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+  
+.dialog-main {
+    position: relative;
+    margin: 10% auto;
+    padding: 20px;
+    background: #fff;
+    width: 100%;
+    max-width: 400px; /* 最大宽度 */
+    z-index: 1001; /* 确保内容在背景之上 */
+}
+  
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.25em;
+    color: #666;
+}
+  
+.dialog-title {
+    font-size: 1.5em;
+}
+  
+.dialog-container {
+    min-height: 30px; /* 确保有足够的空间显示内容 */
+    margin-top: 1em;
+    font-size: 1em;
+    color: #333;
+}
+
+.dialog-footer button {
+    background: none;
+    color: inherit;
+    border: none;
+    font-size: 1.5em;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.dialog-footer button:hover {
+    transform: scale(1.1);
+}
+  
+.dialog-footer button:first-child {
+    background-color: #007bff;
+    color: #fff;
+}
+  
+.dialog-footer button:last-child {
+    background-color: #6c757d;
+    color: #fff;
+}
+  
+.dialog-footer {
+    text-align: right;
+    margin-top: 20px;
+}
+  
+/* 响应式调整 */
+@media (max-width: 576px) {
+    .dialog-main {
+      width: 90%;
+    }
 }
