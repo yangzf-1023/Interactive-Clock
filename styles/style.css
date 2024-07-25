@@ -148,30 +148,6 @@ div#widget p {
     font-size: 1em;
     color: #333;
 }
-
-.dialog-footer button {
-    background: none;
-    color: inherit;
-    border: none;
-    font-size: 1.5em;
-    line-height: 1;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.dialog-footer button:hover {
-    transform: scale(1.1);
-}
-  
-.dialog-footer button:first-child {
-    background-color: #007bff;
-    color: #fff;
-}
-  
-.dialog-footer button:last-child {
-    background-color: #6c757d;
-    color: #fff;
-}
   
 .dialog-footer {
     text-align: right;
