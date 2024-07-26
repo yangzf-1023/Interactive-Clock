@@ -30,13 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         selectedElement = event.target;
-        if (selectedElement.id.indexOf("second_") === -1) {
-            /* 不是秒针 */
-            selectedElement.style.transitionDuration = '0s';
-        } else {
-            /* 是秒针，需要一次性改多个元素 */
-            secondHand.style.transitionDuration = '0s';
+        // if (selectedElement.id.indexOf("second_") === -1) {
+        //     /* 不是秒针 */
+        //     selectedElement.style.transitionDuration = '0s';
+        // } else {
+        //     /* 是秒针，需要一次性改多个元素 */
+        //     secondHand.style.transitionDuration = '0s';
+        // }
+
+        for(const hand of hands){
+            hand.style.transitionDuration = '0s';
         }
+
         centerX = centerGetter.getBoundingClientRect().x;
         centerY = centerGetter.getBoundingClientRect().y;
 
