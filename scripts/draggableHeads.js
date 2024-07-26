@@ -17,8 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedElement = null;
     let centerX, centerY;
 
+    // 24小时则为true
+    let flagOfTimeMode = false;
+
     // 状态机的初态
-    let lastNeedleState = {lastSecond: 0xfefefefe, lastMinute: 0xfefefefe, lastHour: 0xfefefefe};
+    let lastNeedleState = { lastSecond: 0xfefefefe, lastMinute: 0xfefefefe, lastHour: 0xfefefefe };
+
+    // 时针的状态，24-12小时制的转换
+    let lastHourValue = 0xfefefefe;
 
     function startDrag(event) {
         /* 禁用时不响应鼠标事件 */
@@ -30,15 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         selectedElement = event.target;
-        // if (selectedElement.id.indexOf("second_") === -1) {
-        //     /* 不是秒针 */
-        //     selectedElement.style.transitionDuration = '0s';
-        // } else {
-        //     /* 是秒针，需要一次性改多个元素 */
-        //     secondHand.style.transitionDuration = '0s';
-        // }
 
-        for(const hand of hands){
+        for (const hand of hands) {
             hand.style.transitionDuration = '0s';
         }
 
@@ -53,14 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.removeItem('turnsOfSecond');
         sessionStorage.removeItem('turnsOfHour');
 
-        // 开始转动时的角度 
-
         // 秒针的旋转角度
         lastNeedleState.lastSecond = Number(getComputedStyle(secondHand).getPropertyValue('--degree').slice(0, -3));
         // 分针的旋转角度
         lastNeedleState.lastMinute = Number(getComputedStyle(minuteHand).getPropertyValue('--degree').slice(0, -3));
         // 时针的旋转角度
         lastNeedleState.lastHour = Number(getComputedStyle(hourHand).getPropertyValue('--degree').slice(0, -3));
+
+        // 上一个时间
+        lastHourValue = hourPlace.value;
+
+        if (lastNeedleState.lastHour > 12) {
+            flagOfTimeMode = true;
+        }
+        else{
+            flagOfTimeMode = false;
+        }
     }
 
     function drag(event) {
@@ -100,13 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 上一秒或者上一分钟或上一个小时是多少
                 let lastState = lastStateObj[whichState];
                 // 当前时钟是多少
-                if(whichState === 'lastSecond'){
+                if (whichState === 'lastSecond') {
                     currentState = angleOfSecond;
                 }
-                else if(whichState === 'lastMinute'){
+                else if (whichState === 'lastMinute') {
                     currentState = angleOfMinute;
                 }
-                else{
+                else {
                     currentState = angleOfHour;
                 }
 
@@ -117,10 +124,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // 正向绕过一圈
                     if (currentState <= 15 && lastState >= 345) {
+                        if(lastHourValue == 11 && whichState === 'lastHour') {
+                            flagOfTimeMode = true;
+                        }
+                        else if(lastHourValue == 23 && whichState === 'lastHour'){
+                            flagOfTimeMode = false;
+                        }
                         delta += 360;
-                    } 
+                    }
                     // 逆向绕过一圈
                     else if (currentState >= 345 && lastState <= 15) {
+                        if(lastHourValue == 12 && whichState === 'lastHour'){
+                            flagOfTimeMode = false;
+                        }
+                        else if(lastHourValue == 0 && whichState === 'lastHour'){
+                            flagOfTimeMode = true;
+                        }
                         delta -= 360;
                     }
 
@@ -129,29 +148,29 @@ document.addEventListener('DOMContentLoaded', () => {
                         angleOfMinute += delta / 60;
                         // 更新时针
                         angleOfHour += delta / 720;
-                    } 
+                    }
                     else if (whichState === "lastMinute") {
                         /* 更新时针 */
                         angleOfHour += delta / 12;
                     }
 
-                    while(angleOfHour < 0){
+                    while (angleOfHour < 0) {
                         angleOfHour += 360;
                     }
-                    while(angleOfHour > 360){
-                        angleOfHour -=360;
+                    while (angleOfHour > 360) {
+                        angleOfHour -= 360;
                     }
-                    while(angleOfMinute < 0){
+                    while (angleOfMinute < 0) {
                         angleOfMinute += 360;
                     }
-                    while(angleOfMinute > 360){
-                        angleOfMinute -=360;
+                    while (angleOfMinute > 360) {
+                        angleOfMinute -= 360;
                     }
-                    while(angleOfSecond < 0){
+                    while (angleOfSecond < 0) {
                         angleOfSecond += 360;
                     }
-                    while(angleOfSecond > 360){
-                        angleOfSecond -=360;
+                    while (angleOfSecond > 360) {
+                        angleOfSecond -= 360;
                     }
 
                     minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
@@ -164,7 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     while (lastStateObj[whichState] < 0) {
                         lastStateObj[whichState] += 360;
                     }
-                } else {
+                    lastHourValue = hourPlace.value;
+                } 
+                else {
                     lastStateObj[whichState] = currentState;
                 }
             };
@@ -174,9 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // 动的是秒针
             if (selectedElement.id.indexOf("second_") !== -1) {
                 joint(lastNeedleState, "lastSecond");
-            } 
+            }
             else if (selectedElement.id.indexOf("minute_") !== -1) {
                 joint(lastNeedleState, "lastMinute");
+            }
+            else{
+                joint(lastNeedleState, "lastHour");
             }
 
             // 使用round更符合视觉直观，使用floor是为了保证逻辑时间的正确
@@ -186,7 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
             minute = Math.floor(60 * angleOfMinute / 360) % 60;
             minutePlace.value = String(minute).padStart(2, '0');
             // 这里涉及24小时制和12小时制的问题
-            hour = Math.floor(12 * angleOfHour / 360) % 24;
+            hour = Math.floor(12 * angleOfHour / 360) % 12;
+            if (flagOfTimeMode) {
+                hour += 12;
+            }
             hourPlace.value = String(hour).padStart(2, '0');
         }
     }
@@ -205,3 +232,4 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedElement = null;
     }
 });
+
