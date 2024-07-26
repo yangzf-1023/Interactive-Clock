@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastNeedleState = { lastSecond: 0xfefefefe, lastMinute: 0xfefefefe, lastHour: 0xfefefefe };
 
     // 时针的状态，24-12小时制的转换
-    let lastHourValue = 0xfefefefe;
+    let lastHourValue = hourPlace.value;
 
     function startDrag(event) {
         /* 禁用时不响应鼠标事件 */
@@ -62,12 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 上一个时间
         lastHourValue = hourPlace.value;
 
-        if (lastNeedleState.lastHour > 12) {
+        if (lastHourValue > 12) {
             flagOfTimeMode = true;
         }
         else{
             flagOfTimeMode = false;
         }
+        console.log(flagOfTimeMode);
     }
 
     function drag(event) {
@@ -93,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 /* 是秒针，需要一次性改多个元素，selectedElement可能只是一个小组件，没有资格代表整个秒针 */
                 secondHand.style.setProperty('--degree', `${angle}deg`);
             }
-            // 下面该设置时间了,暂且约定动某一个针不影响其他的
+            // 下面该设置时间了
             let second = secondPlace.value;
             let minute = minutePlace.value;
             let hour = hourPlace.value;
@@ -154,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         angleOfHour += delta / 12;
                     }
 
+
                     while (angleOfHour < 0) {
                         angleOfHour += 360;
                     }
@@ -176,21 +178,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
                     hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
 
+                    // 更新数据
                     lastStateObj[whichState] += delta;
+                    
+
                     while (lastStateObj[whichState] > 360) {
                         lastStateObj[whichState] -= 360;
                     }
                     while (lastStateObj[whichState] < 0) {
                         lastStateObj[whichState] += 360;
                     }
-                    lastHourValue = hourPlace.value;
                 } 
                 else {
                     lastStateObj[whichState] = currentState;
                 }
+                lastHourValue = hourPlace.value;
+                console.log(flagOfTimeMode);
             };
 
-            // 秒针-分针联动
+            // 秒针-分针-时针联动
 
             // 动的是秒针
             if (selectedElement.id.indexOf("second_") !== -1) {
@@ -223,6 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // 更新到setTime
 
     function endDrag() {
+        if (lastNeedleState.lastHour > 12) {
+            flagOfTimeMode = true;
+        }
+        else{
+            flagOfTimeMode = false;
+        }
+        console.log(flagOfTimeMode);
         // 每松开一次
         svg.removeEventListener('mousemove', drag);
         svg.removeEventListener('mouseup', endDrag);
