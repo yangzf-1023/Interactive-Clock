@@ -13,6 +13,7 @@ const pauseButton = document.querySelector("input#pause");
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
 const secondPlace = document.querySelector('#second_place');
+const places = [hourPlace, minutePlace, secondPlace];
 // 存储所有闹钟时间的数组
 let alarmTimes = [];
 // 获取闹钟输入框和按钮
@@ -40,6 +41,38 @@ let isClockPaused = false;
 let isClockRestarted = false;
 // 是否是设置后的第一次
 let firstTimeAfterSet = false;
+
+for (const place of places) {
+    place.addEventListener('input', function () {
+        for (const hand of [minuteHand, hourHand]) {
+            hand.style.transitionDuration = "0s";
+        }
+        for (const hand of secondHands) {
+            hand.style.transitionDuration = "0s";
+        }
+        // 设置的时间
+        let setHour = hourPlace.value;
+        let setMinute = minutePlace.value;
+        let setSecond = secondPlace.value;
+        // 格式正确
+        if (hourRegex.test(setHour) && secondRegex.test(setSecond) && minuteRegex.test(setMinute)) {
+            // 计算当圈的角度（<360）
+            let angleOfSecond = 6 * Number(setSecond);
+            let angleOfMinute = 6 * (Number(setMinute) + Number(setSecond) / 60);
+            let angleOfHour = 30 * (Number(setHour) % 12 + (Number(setMinute) + Number(setSecond) / 60) / 60);
+
+
+            for (const item of secondHands) {
+                item.style.setProperty('--degree', `${angleOfSecond}deg`);
+            }
+            minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
+            hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
+            console.log(angleOfHour, angleOfSecond, angleOfMinute, setHour, setMinute, setSecond);
+        }
+    });
+}
+
+
 
 // 点击设置
 setButton.addEventListener('click', function () {
@@ -118,7 +151,7 @@ setAlarmButton.addEventListener('click', function () {
         };
 
         // 检查这个时间是否已经设置为闹钟
-        let existingAlarm = alarmTimes.find(alarm => 
+        let existingAlarm = alarmTimes.find(alarm =>
             alarm.hour === alarmTime.hour && alarm.minute === alarmTime.minute
         );
 
@@ -152,7 +185,7 @@ function triggerAlarm(alarmTimeIndex) {
     // 更新模态对话框中的提醒信息
     document.querySelector('.dialog-container').textContent = `闹钟${alarmTimeIndex + 1}响起！时间：${new Date(alarmTime.dateTime).toLocaleTimeString()}`;
     // 为关闭按钮添加事件监听器
-    document.getElementById('dialogSureBtn').addEventListener('click', function() {
+    document.getElementById('dialogSureBtn').addEventListener('click', function () {
         // 隐藏模态对话框
         dialog.style.display = 'none';
         // 停止音频
@@ -177,7 +210,7 @@ function updateAlarmDisplay() {
         toggleButton.className = `btn alarmItemBtn ${alarm.active ? 'btn-outline-success' : 'btn-outline-danger'}`;
         toggleButton.textContent = alarm.active ? '已开启' : '已关闭';
         // 为切换按钮添加事件监听器
-        toggleButton.addEventListener('click', function() {
+        toggleButton.addEventListener('click', function () {
             alarm.active = !alarm.active;
             updateAlarmDisplay(); // 更新闹钟显示状态
         });
@@ -185,7 +218,7 @@ function updateAlarmDisplay() {
         const closeButton = document.createElement('span');
         closeButton.innerHTML = '&times;';
         closeButton.className = 'close';
-        closeButton.onclick = function() {
+        closeButton.onclick = function () {
             // 从数组和显示中移除这个闹钟
             alarmTimes.splice(index, 1);
             updateAlarmDisplay();
@@ -261,6 +294,14 @@ function changePerSecond() {
     else {
         // 没有设置过时间
         current = new Date(Date.now() - Number(sessionStorage.getItem('pauseTime')));
+    }
+
+
+    for (const hand of [minuteHand, hourHand]) {
+        hand.style.transitionDuration = "0.5s";
+    }
+    for (const hand of secondHands) {
+        hand.style.transitionDuration = "0.5s";
     }
 
     // 更新初始内容

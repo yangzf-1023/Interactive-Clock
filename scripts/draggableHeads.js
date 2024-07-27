@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let minuteHand = document.querySelector('#minute_hand');
     let hourHand = document.querySelector('#hour_hand');
     const secondHand = document.querySelector('#second_handle');
-
     const hands = [minuteHand, hourHand, secondHand];
+
+    
 
     hands.forEach(hand => {
         hand.addEventListener('mousedown', startDrag);
@@ -59,13 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // 时针的旋转角度
         lastNeedleState.lastHour = Number(getComputedStyle(hourHand).getPropertyValue('--degree').slice(0, -3));
 
-        // 上一个时间
+        // 上一个时
         lastHourValue = hourPlace.value;
+        // 上一个分
+        lastMinuteValue = minutePlace.value;
+        // 上一个秒
+        lastSecondValue = secondPlace.value;
 
-        if (lastHourValue > 12) {
+        console.log(lastHourValue, lastMinuteValue, lastSecondValue);
+
+        if (lastHourValue >= 12) {
             flagOfTimeMode = true;
         }
-        else{
+        else {
             flagOfTimeMode = false;
         }
         console.log(flagOfTimeMode);
@@ -123,22 +130,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     /* 这里的尺度不能太大 */
                     let delta = currentState - lastState;
 
-                    // 正向绕过一圈
-                    if (currentState <= 15 && lastState >= 345) {
-                        if(lastHourValue == 11 && whichState === 'lastHour') {
+                    console.log(currentState, lastState, lastHourValue, lastMinuteValue);
+
+                    // 正向绕过一圈(这里的判定仍需要修改)
+                    if (currentState <= 90 && lastState >= 270) {
+                        console.log('test');
+
+                        if ((lastHourValue == 11 && whichState === 'lastHour')
+                            // || (lastHourValue == 11 && lastMinuteValue == 59 && whichState === 'lastMinute')
+                            || (lastHourValue == 11 && whichState === 'lastMinute')
+                            || (lastHourValue == 11 && lastMinuteValue == 59 && whichState === 'lastSecond')) {
                             flagOfTimeMode = true;
+                            console.log('test', flagOfTimeMode);
                         }
-                        else if(lastHourValue == 23 && whichState === 'lastHour'){
+                        else if ((lastHourValue == 23 && whichState === 'lastHour')
+                            || (lastHourValue == 23 && whichState === 'lastMinute')
+                            || (lastHourValue == 23 && lastMinuteValue == 59 && whichState === 'lastSecond')) {
                             flagOfTimeMode = false;
+                            console.log('test', flagOfTimeMode);
                         }
                         delta += 360;
                     }
                     // 逆向绕过一圈
-                    else if (currentState >= 345 && lastState <= 15) {
-                        if(lastHourValue == 12 && whichState === 'lastHour'){
+                    else if (currentState >= 270 && lastState <= 90) {
+                        if ((lastHourValue == 12 && whichState === 'lastHour')
+                            || (lastHourValue == 12 && whichState === 'lastMinute')
+                            || (lastHourValue == 12 && lastMinuteValue == 0 && whichState === 'lastSecond')) {
                             flagOfTimeMode = false;
                         }
-                        else if(lastHourValue == 0 && whichState === 'lastHour'){
+                        else if ((lastHourValue == 0 && whichState === 'lastHour')
+                            || (lastHourValue == 0 && whichState === 'lastMinute')
+                            || (lastHourValue == 0 && lastMinuteValue == 0 && whichState === 'lastSecond')) {
                             flagOfTimeMode = true;
                         }
                         delta -= 360;
@@ -180,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // 更新数据
                     lastStateObj[whichState] += delta;
-                    
+
 
                     while (lastStateObj[whichState] > 360) {
                         lastStateObj[whichState] -= 360;
@@ -188,11 +210,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     while (lastStateObj[whichState] < 0) {
                         lastStateObj[whichState] += 360;
                     }
-                } 
+                }
                 else {
                     lastStateObj[whichState] = currentState;
                 }
+                // 更新旧有的值
                 lastHourValue = hourPlace.value;
+                lastMinuteValue = minutePlace.value;
+                lastSecondValue = secondPlace.value;
                 console.log(flagOfTimeMode);
             };
 
@@ -205,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (selectedElement.id.indexOf("minute_") !== -1) {
                 joint(lastNeedleState, "lastMinute");
             }
-            else{
+            else {
                 joint(lastNeedleState, "lastHour");
             }
 
@@ -229,10 +254,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 更新到setTime
 
     function endDrag() {
-        if (lastNeedleState.lastHour > 12) {
+        // console.log('last', lastNeedleState.lastHour);
+        if (lastNeedleState.lastHour >= 12) {
             flagOfTimeMode = true;
         }
-        else{
+        else {
             flagOfTimeMode = false;
         }
         console.log(flagOfTimeMode);
