@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let delta = currentState - lastState;
 
                     console.log(currentState, lastState, lastHourValue, lastMinuteValue);
-
+                    
                     // 正向绕过一圈(这里的判定仍需要修改)
                     if (currentState <= 90 && lastState >= 270) {
                         console.log('test');
@@ -164,6 +164,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             flagOfTimeMode = true;
                         }
                         delta -= 360;
+                    }
+                    // 更新数据
+                    lastStateObj[whichState] += delta;
+
+
+                    while (lastStateObj[whichState] > 360) {
+                        lastStateObj[whichState] -= 360;
+                    }
+                    while (lastStateObj[whichState] < 0) {
+                        lastStateObj[whichState] += 360;
                     }
 
                     if (whichState === "lastSecond") {
@@ -200,16 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
                     hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
 
-                    // 更新数据
-                    lastStateObj[whichState] += delta;
-
-
-                    while (lastStateObj[whichState] > 360) {
-                        lastStateObj[whichState] -= 360;
-                    }
-                    while (lastStateObj[whichState] < 0) {
-                        lastStateObj[whichState] += 360;
-                    }
                 }
                 else {
                     lastStateObj[whichState] = currentState;
@@ -263,6 +263,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         console.log(flagOfTimeMode);
         // 每松开一次
+
+        //更新时间
+        let setHour = hourPlace.value;
+        let setMinute = minutePlace.value;
+        let setSecond = secondPlace.value;
+
+        let angleOfSecond = 6 * Number(setSecond);
+        let angleOfMinute = 6 * (Number(setMinute) + Number(setSecond) / 60);
+        let angleOfHour = 30 * (Number(setHour) % 12 + (Number(setMinute) + Number(setSecond) / 60) / 60);
+
+
+        for (const item of secondHands) {
+            item.style.setProperty('--degree', `${angleOfSecond}deg`);
+        }
+        minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
+        hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
+
         svg.removeEventListener('mousemove', drag);
         svg.removeEventListener('mouseup', endDrag);
         svg.removeEventListener('mouseleave', endDrag);
