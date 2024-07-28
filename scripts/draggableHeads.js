@@ -249,10 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 之前的逻辑是依据时间设置角度
-    // 现在如何放过来依据角度设置时间？
-    // 更新到setTime
-
     function endDrag() {
         // console.log('last', lastNeedleState.lastHour);
         if (lastNeedleState.lastHour >= 12) {

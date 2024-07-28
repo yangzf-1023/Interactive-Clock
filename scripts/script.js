@@ -43,6 +43,7 @@ let isClockRestarted = false;
 let firstTimeAfterSet = false;
 
 for (const place of places) {
+    // 输入后自动更新角度
     place.addEventListener('input', function () {
         for (const hand of [minuteHand, hourHand]) {
             hand.style.transitionDuration = "0s";
@@ -61,7 +62,7 @@ for (const place of places) {
             let angleOfMinute = 6 * (Number(setMinute) + Number(setSecond) / 60);
             let angleOfHour = 30 * (Number(setHour) % 12 + (Number(setMinute) + Number(setSecond) / 60) / 60);
 
-
+            // 设置角度
             for (const item of secondHands) {
                 item.style.setProperty('--degree', `${angleOfSecond}deg`);
             }
@@ -126,6 +127,7 @@ pauseButton.addEventListener('click', function () {
         svgElement.classList.add("clockStopped");
         svgElement.classList.remove("clockNotStopped");
     } else {
+        // 已经继续了
         pauseButton.value = "暂停";
         hourPlace.disabled = true;
         minutePlace.disabled = true;
