@@ -1,0 +1,184 @@
+<!-- 初步实现的秒表
+实现分段功能
+嵌入网页需要调整样式 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分段计时器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .container {
+            width: 500px;
+            height: 750px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .timer {
+            text-align: center;
+            margin: 0;
+        }
+        button {
+            margin: 2px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .laps {
+            margin-top: 10px;
+            text-align: center;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 75%;
+            border-top: 1px solid #ccc;
+        }
+        #laps-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 15px;
+        }
+        #laps-list li {
+            padding: 2px;
+            border-bottom: 1px solid #ddd;
+        }
+        .laps::-webkit-scrollbar {
+            width: 4px;
+        }
+        .laps::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .laps::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 5px;
+        }
+        .laps::-webkit-scrollbar-thumb:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="timer">
+            <h1><span id="total-timer">00:00:00.00</span></h1>
+            <button id="start-stop">开始</button>
+            <button id="reset">重置</button>
+            <button id="lap">分段</button>
+        </div>
+        <div class="laps">
+            <ul id="laps-list"></ul>
+        </div>
+    </div>
+    <script>
+        let startTime;
+        let updatedTime;
+        let difference;
+        let lastLapTime = 0;
+        let timerInterval;
+        let running = false;
+        let lapTimes = [];
+
+        const totalTimerElement = document.getElementById('total-timer');
+        const startStopButton = document.getElementById('start-stop');
+        const resetButton = document.getElementById('reset');
+        const lapButton = document.getElementById('lap');
+        const lapsList = document.getElementById('laps-list');
+
+        startStopButton.addEventListener('click', () => {
+            if (!running) {
+                startTime = new Date().getTime() - (difference || 0);
+                timerInterval = setInterval(updateTimer, 10);
+                startStopButton.textContent = '暂停';
+                running = true;
+            } else {
+                clearInterval(timerInterval);
+                startStopButton.textContent = '开始';
+                running = false;
+            }
+        });
+
+        resetButton.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            difference = 0;
+            lastLapTime = 0;
+            running = false;
+            startStopButton.textContent = '开始';
+            totalTimerElement.textContent = '00:00:00.00';
+            lapsList.innerHTML = '';
+            lapTimes = [];
+        });
+
+        lapButton.addEventListener('click', () => {
+            if (running) {
+                const currentTime = difference;
+                const lapTime = currentTime - lastLapTime;
+                lapTimes.push(lapTime);
+                lastLapTime = currentTime;
+                updateLaps();
+            }
+        });
+
+        function updateTimer() {
+            updatedTime = new Date().getTime();
+            difference = updatedTime - startTime;
+            totalTimerElement.textContent = formatTime(difference);
+        }
+
+        function formatTime(time) {
+            const hours = Math.floor(time / 3600000).toString().padStart(2, '0');
+            const minutes = Math.floor((time % 3600000) / 60000).toString().padStart(2, '0');
+            const seconds = Math.floor((time % 60000) / 1000).toString().padStart(2, '0');
+            const milliseconds = Math.floor((time % 1000) / 10).toString().padStart(2, '0');
+
+            return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+        }
+
+        function updateLaps() {
+            lapsList.innerHTML = '';
+
+            let longestLap = Math.max(...lapTimes);
+            let shortestLap = Math.min(...lapTimes);
+
+            lapTimes.forEach((lapTime, index) => {
+                const lapTimeFormatted = formatTime(lapTime);
+                const li = document.createElement('li');
+                li.textContent = `分段 ${index + 1}: ${lapTimeFormatted}`;
+                if(lapTimes.length > 2){
+                    if (lapTime === longestLap) {
+                        li.style.color = 'red';
+                    } else if (lapTime === shortestLap) {
+                        li.style.color = 'green';
+                    }
+                }
+                lapsList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
