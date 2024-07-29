@@ -11,7 +11,7 @@ const inputForTimer = [hourForTimer, minuteForTimer, secondForTimer];
 
 // 
 let endTime;
-let timerIntervalForTimer;
+let timerIntervalForTimer = null;
 let isTimerPaused = false;
 let isTimerStarted = false;
 
@@ -42,7 +42,9 @@ cancelBtnForTimer.addEventListener('click', function() {
         inputPlace.value = '';
     }
     isTimerStarted = false;
-    clearInterval(timerIntervalForTimer);
+    if(timerIntervalForTimer){
+        clearInterval(timerIntervalForTimer);
+    }
 });
 
 pauseBtnForTimer.addEventListener('click', function(){
@@ -105,6 +107,7 @@ function changePerSecondForTimer(){
         // 清空所有数据
         sessionStorage.removeItem('accumulatePauseTimeForTimer');
         sessionStorage.removeItem('startTimerPause');
+        alert('时间到!');
     }
 }
 
