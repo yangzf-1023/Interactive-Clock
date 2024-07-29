@@ -172,11 +172,37 @@ div#widget p {
 }
 
 /* 秒表样式 */
-
-.list-group li {
+.list-group#stopWatchList {
+    height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.list-group#stopWatchList li {
     list-style-type: none;
     padding: 0;
+    margin-left:auto;
+    margin-right:auto;
+    padding: 5px;
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
 }
+
+.list-group::-webkit-scrollbar {
+    width: 8px;
+}
+.list-group::-webkit-scrollbar-track {
+    background: #e0e0e0; 
+    border-radius: 5px;
+}
+.list-group::-webkit-scrollbar-thumb {
+    background: #a0a0a0; 
+    border-radius: 5px;
+}
+.list-group::-webkit-scrollbar-thumb:hover {
+    background: #808080; 
+}
+
 
 
 

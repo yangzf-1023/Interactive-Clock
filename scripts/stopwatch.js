@@ -58,6 +58,9 @@ function formatTime(time) {
     const seconds = Math.floor((time % 60000) / 1000).toString().padStart(2, '0');
     const milliseconds = Math.floor((time % 1000) / 10).toString().padStart(2, '0');
 
+    if (hours !== '00') {
+        return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+    }
     return `${minutes}:${seconds}.${milliseconds}`;
 }
 
@@ -70,7 +73,7 @@ function updateLaps() {
     lapTimes.forEach((lapTime, index) => {
         const lapTimeFormatted = formatTime(lapTime);
         const li = document.createElement('li');
-        li.textContent = `分段${index + 1}  ${lapTimeFormatted}`;
+        li.textContent = `分段 ${index + 1} ${lapTimeFormatted}`;
         if(lapTimes.length > 2){
             if (lapTime === longestLap) {
                 li.style.color = 'red';
