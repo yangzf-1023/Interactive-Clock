@@ -42,6 +42,7 @@ cancelBtnForTimer.addEventListener('click', function() {
         inputPlace.value = '';
     }
     isTimerStarted = false;
+    clearInterval(timerIntervalForTimer);
 });
 
 pauseBtnForTimer.addEventListener('click', function(){
