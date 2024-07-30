@@ -11,6 +11,10 @@ const startStopWatchButton = document.getElementById('start_stopWatch');
 const resetStopWatchButton = document.getElementById('reset_stopWatch');
 const stopWatchList = document.getElementById('stopWatchList');
 
+// 创建并插入第一个元素
+const myLapLi = document.createElement('li');
+myLapLi.textContent = '我的分段';
+
 startStopWatchButton.addEventListener('click', () => {
     if (!running) {
         startTime_Clock = new Date().getTime() - (difference || 0);
@@ -35,6 +39,7 @@ resetStopWatchButton.addEventListener('click', () => {
         startStopWatchButton.textContent = '开始';
         stopWatchDisplayElement.textContent = '00:00.00';
         stopWatchList.innerHTML = '';
+        stopWatchList.appendChild(myLapLi);
         lapTimes = [];
     } else {
         const currentTime = difference;
@@ -83,4 +88,5 @@ function updateLaps() {
         }
         stopWatchList.appendChild(li);
     });
+    stopWatchList.insertBefore(myLapLi, stopWatchList.firstChild);
 }

@@ -173,7 +173,7 @@ div#widget p {
 
 /* 秒表样式 */
 .list-group#stopWatchList {
-    height: 150px;
+    height: 400px;
     overflow-y: auto;
     border: 1px solid #ddd;
     border-radius: 5px;
