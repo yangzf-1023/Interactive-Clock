@@ -35,6 +35,12 @@ startBtnForTimer.addEventListener('click', function (event) {
 });
 
 cancelBtnForTimer.addEventListener('click', function() { 
+    // 还原暂停重启
+    if (isTimerPaused) {
+        isTimerPaused = false;
+        pauseBtnForTimer.textContent = '暂停';
+    }
+    
     // 清空所有数据
     sessionStorage.removeItem('accumulatePauseTimeForTimer');
     sessionStorage.removeItem('startTimerPause');
