@@ -19,9 +19,6 @@ startBtnForTimer.addEventListener('click', function (event) {
         alert('计时器运行中');
         return;
     }
-    const hourRegex = /^\d{1,2}$/;
-    const minuteRegex = /^\d{1,2}$/;
-    const secondRegex = /^\d{1,2}$/;
     if (hourRegex.test(hourForTimer.value) && minuteRegex.test(minuteForTimer.value) && secondRegex.test(secondForTimer.value)) {
         isTimerStarted = true;
         endTime = Date.now() + (Number(hourForTimer.value) * 60 * 60 + Number(minuteForTimer.value) * 60 + Number(secondForTimer.value)) * 1000;
@@ -58,7 +55,7 @@ pauseBtnForTimer.addEventListener('click', function () {
     isTimerPaused = !isTimerPaused;
     // 如果暂停了
     if (isTimerPaused) {
-        console.log('happy');
+        // console.log('happy');
         // 记录暂停的时刻
         sessionStorage.setItem('startTimerPause', String(Date.now()));
         pauseBtnForTimer.textContent = '继续';
@@ -68,7 +65,7 @@ pauseBtnForTimer.addEventListener('click', function () {
         // 暂停了多长时间
         let currentPauseTime = Date.now() - Number(sessionStorage.getItem('startTimerPause'));
         let accumulatePauseTime = sessionStorage.getItem('accumulatePauseTimeForTimer');
-        console.log(currentPauseTime, accumulatePauseTime);
+        // console.log(currentPauseTime, accumulatePauseTime);
         if (!accumulatePauseTime) {
             sessionStorage.setItem('accumulatePauseTimeForTimer', String(currentPauseTime));
         } else {
@@ -86,7 +83,7 @@ function changePerSecondForTimer() {
     // 时间差
     let currentOffset = endTime - current.getTime();
 
-    console.log(endTime, current.getTime(), currentOffset);
+    console.log(current.getTime());
 
     if (sessionStorage.getItem('accumulatePauseTimeForTimer')) {
         currentOffset += Number(sessionStorage.getItem('accumulatePauseTimeForTimer'));
@@ -94,7 +91,7 @@ function changePerSecondForTimer() {
     // 时区差异
     let timeZoneOffset = current.getTimezoneOffset() * 60 * 1000;
 
-    console.log(currentOffset, timeZoneOffset);
+    // console.log(currentOffset, timeZoneOffset);
 
     if (currentOffset > 0) {
         let currentTime = new Date(currentOffset + timeZoneOffset);
