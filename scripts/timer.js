@@ -9,77 +9,77 @@ const cancelBtnForTimer = document.querySelector('#cancel_timer');
 
 const inputForTimer = [hourForTimer, minuteForTimer, secondForTimer];
 
-// 
 let endTime;
 let timerIntervalForTimer = null;
 let isTimerPaused = false;
 let isTimerStarted = false;
 
 startBtnForTimer.addEventListener('click', function (event) {
-    if(isTimerStarted){
+    if (isTimerStarted) {
         alert('计时器运行中');
         return;
     }
+    const hourRegex = /^\d{1,2}$/;
+    const minuteRegex = /^\d{1,2}$/;
+    const secondRegex = /^\d{1,2}$/;
     if (hourRegex.test(hourForTimer.value) && minuteRegex.test(minuteForTimer.value) && secondRegex.test(secondForTimer.value)) {
         isTimerStarted = true;
-        endTime = Date.now()+(Number(hourForTimer.value)*60*60+Number(minuteForTimer.value)*60+Number(secondForTimer.value))*1000;
+        endTime = Date.now() + (Number(hourForTimer.value) * 60 * 60 + Number(minuteForTimer.value) * 60 + Number(secondForTimer.value)) * 1000;
         changePerSecondForTimer();
         timerIntervalForTimer = setInterval(changePerSecondForTimer, 1000);
-    }
-    else {
-        for(const inputPlace of inputForTimer){
+    } else {
+        for (const inputPlace of inputForTimer) {
             inputPlace.value = '';
         }
         alert('输入非法!');
     }
 });
 
-cancelBtnForTimer.addEventListener('click', function() { 
+cancelBtnForTimer.addEventListener('click', function () {
     // 还原暂停重启
     if (isTimerPaused) {
         isTimerPaused = false;
         pauseBtnForTimer.textContent = '暂停';
     }
-    
+
     // 清空所有数据
     sessionStorage.removeItem('accumulatePauseTimeForTimer');
     sessionStorage.removeItem('startTimerPause');
-    for(const inputPlace of inputForTimer){
+    for (const inputPlace of inputForTimer) {
         inputPlace.value = '';
     }
     isTimerStarted = false;
-    if(timerIntervalForTimer){
+    if (timerIntervalForTimer) {
         clearInterval(timerIntervalForTimer);
     }
 });
 
-pauseBtnForTimer.addEventListener('click', function(){
+pauseBtnForTimer.addEventListener('click', function () {
     isTimerPaused = !isTimerPaused;
     // 如果暂停了
-    if(isTimerPaused){
+    if (isTimerPaused) {
         console.log('happy');
         // 记录暂停的时刻
-        sessionStorage.setItem('startTimerPause',String(Date.now()));
+        sessionStorage.setItem('startTimerPause', String(Date.now()));
         pauseBtnForTimer.textContent = '继续';
     }
     // 如果是恢复
-    else{
+    else {
         // 暂停了多长时间
         let currentPauseTime = Date.now() - Number(sessionStorage.getItem('startTimerPause'));
         let accumulatePauseTime = sessionStorage.getItem('accumulatePauseTimeForTimer');
-        console.log(currentPauseTime,accumulatePauseTime );
-        if(!accumulatePauseTime ){
+        console.log(currentPauseTime, accumulatePauseTime);
+        if (!accumulatePauseTime) {
             sessionStorage.setItem('accumulatePauseTimeForTimer', String(currentPauseTime));
-        }
-        else{
+        } else {
             sessionStorage.setItem('accumulatePauseTimeForTimer', String(Number(currentPauseTime) + Number(accumulatePauseTime)));
         }
         pauseBtnForTimer.textContent = '暂停';
     }
 });
 
-function changePerSecondForTimer(){
-    if(isTimerPaused){
+function changePerSecondForTimer() {
+    if (isTimerPaused) {
         return;
     }
     let current = new Date();
@@ -88,32 +88,60 @@ function changePerSecondForTimer(){
 
     console.log(endTime, current.getTime(), currentOffset);
 
-    
-    if(sessionStorage.getItem('accumulatePauseTimeForTimer')){
+    if (sessionStorage.getItem('accumulatePauseTimeForTimer')) {
         currentOffset += Number(sessionStorage.getItem('accumulatePauseTimeForTimer'));
     }
     // 时区差异
-    let timeZoneOffset = current.getTimezoneOffset()*60*1000;
+    let timeZoneOffset = current.getTimezoneOffset() * 60 * 1000;
 
     console.log(currentOffset, timeZoneOffset);
 
-
-    if (currentOffset > 0){
+    if (currentOffset > 0) {
         let currentTime = new Date(currentOffset + timeZoneOffset);
-        // let currentTime = new Date(currentOffset );
-        // console.log(currentTime);
         hourForTimer.value = String(currentTime.getHours()).padStart(2, '0');
         minuteForTimer.value = String(currentTime.getMinutes()).padStart(2, '0');
         secondForTimer.value = String(currentTime.getSeconds()).padStart(2, '0');
-    }
-    else{
-        // 弹出时间到了
-        isTimerStarted = false;
+    } else {
+        // 还原暂停重启
+        if (isTimerPaused) {
+            isTimerPaused = false;
+            pauseBtnForTimer.textContent = '暂停';
+        }
 
         // 清空所有数据
         sessionStorage.removeItem('accumulatePauseTimeForTimer');
         sessionStorage.removeItem('startTimerPause');
-        alert('时间到!');
+        for (const inputPlace of inputForTimer) {
+            inputPlace.value = '';
+        }
+        isTimerStarted = false;
+        if (timerIntervalForTimer) {
+            clearInterval(timerIntervalForTimer);
+        }
+        triggerTimerAlarm();
     }
+}
+
+// 获取音频元素
+var audio = document.getElementById('alarmSound');
+
+// 获取模态对话框元素
+var dialog = document.querySelector('#dialog_timer');
+
+// 定义触发提醒的函数
+function triggerTimerAlarm() {
+    // 播放音频
+    audio.play();
+    // 显示模态对话框
+    dialog.style.display = 'block';
+    // 更新模态对话框中的提醒信息
+    document.querySelector('.dialog-container').textContent = '计时器时间到';
+    // 为关闭按钮添加事件监听器
+    document.getElementById('dialogSureBtn_timer').addEventListener('click', function () {
+        // 隐藏模态对话框
+        dialog.style.display = 'none';
+        // 停止音频
+        audio.pause();
+    });
 }
 

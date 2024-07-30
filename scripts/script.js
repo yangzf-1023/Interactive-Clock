@@ -181,7 +181,7 @@ function triggerAlarm(alarmTimeIndex) {
     var audio = document.getElementById('alarmSound');
     audio.play();
     // 获取模态对话框元素
-    var dialog = document.querySelector('.dialog-component');
+    var dialog = document.querySelector('#dialog');
     // 显示模态对话框
     dialog.style.display = 'block';
     // 更新模态对话框中的提醒信息
