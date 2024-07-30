@@ -21,8 +21,9 @@ startBtnForTimer.addEventListener('click', function (event) {
     }
     if (hourRegex.test(hourForTimer.value) && minuteRegex.test(minuteForTimer.value) && secondRegex.test(secondForTimer.value)) {
         isTimerStarted = true;
-        endTime = Date.now() + (Number(hourForTimer.value) * 60 * 60 + Number(minuteForTimer.value) * 60 + Number(secondForTimer.value)) * 1000;
-        changePerSecondForTimer();
+        console.log(Date.now());
+        endTime = Date.now() + (Number(hourForTimer.value) * 60 * 60 + Number(minuteForTimer.value) * 60 + Number(secondForTimer.value)) * 1000 + 1000;
+        // changePerSecondForTimer();
         timerIntervalForTimer = setInterval(changePerSecondForTimer, 1000);
     } else {
         for (const inputPlace of inputForTimer) {
