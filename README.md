@@ -1,9 +1,9 @@
 # 大作业选题二：可交互时钟
 
-杨之凡 2022012065 yangzf22@mails.tsinghua.edu.cn
-徐浩然 2022012082
-杨憬晗 2022010808
-赵涵远 2022010818
+* 杨之凡 2022012065 yangzf22@mails.tsinghua.edu.cn
+* 徐浩然 2022012082
+* 杨憬晗 2022010808
+* 赵涵远 2022010818
 
 ## 实现思路
 
@@ -331,24 +331,23 @@ current = new Date(setTime.getTime() + offset + deltaTime + ...);
 为使得先前的拨动不会影响到后续的时间拨动和时钟运行，本实验在每次放下指针时将钟表的位置重置为合法位置，即数字表盘对应的位置。代码如下:
 ```javascript
 function endDrag() {
-        ...
+    ...
+    //更新时间
+    let setHour = hourPlace.value;
+    let setMinute = minutePlace.value;
+    let setSecond = secondPlace.value;
 
-        //更新时间
-        let setHour = hourPlace.value;
-        let setMinute = minutePlace.value;
-        let setSecond = secondPlace.value;
+    let angleOfSecond = 6 * Number(setSecond);
+    let angleOfMinute = 6 * (Number(setMinute) + Number(setSecond) / 60);
+    let angleOfHour = 30 * (Number(setHour) % 12 + (Number(setMinute) + Number(setSecond) / 60) / 60);
 
-        let angleOfSecond = 6 * Number(setSecond);
-        let angleOfMinute = 6 * (Number(setMinute) + Number(setSecond) / 60);
-        let angleOfHour = 30 * (Number(setHour) % 12 + (Number(setMinute) + Number(setSecond) / 60) / 60);
-
-        for (const item of secondHands) {
-            item.style.setProperty('--degree', `${angleOfSecond}deg`);
-        }
-        minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
-        hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
-        ...
+    for (const item of secondHands) {
+        item.style.setProperty('--degree', `${angleOfSecond}deg`);
     }
+    minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
+    hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
+    ...
+}
 ```
 
 ### SVG的大小无法改变
