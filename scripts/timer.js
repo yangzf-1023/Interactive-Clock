@@ -6,22 +6,26 @@ const secondForTimer = document.querySelector('#second_place_timer');
 const startBtnForTimer = document.querySelector('#start_timer');
 const pauseBtnForTimer = document.querySelector('#pause_timer');
 const cancelBtnForTimer = document.querySelector('#cancel_timer');
-
+// 文本框列表
 const inputForTimer = [hourForTimer, minuteForTimer, secondForTimer];
-
+// 计算出来的计时器应该停止的时刻
 let endTime;
 let timerIntervalForTimer = null;
+// 计时器是否暂停
 let isTimerPaused = false;
+// 计时器是否继续
 let isTimerStarted = false;
 
+// 开始倒计时
 startBtnForTimer.addEventListener('click', function (event) {
+    // 不能同时有多个计时
     if (isTimerStarted) {
         alert('计时器运行中');
         return;
     }
     if (hourRegex.test(hourForTimer.value) && minuteRegex.test(minuteForTimer.value) && secondRegex.test(secondForTimer.value)) {
         isTimerStarted = true;
-        console.log(Date.now());
+        // console.log(Date.now());
         endTime = Date.now() + (Number(hourForTimer.value) * 60 * 60 + Number(minuteForTimer.value) * 60 + Number(secondForTimer.value)) * 1000 + 1000;
         // changePerSecondForTimer();
         timerIntervalForTimer = setInterval(changePerSecondForTimer, 1000);
@@ -33,13 +37,13 @@ startBtnForTimer.addEventListener('click', function (event) {
     }
 });
 
+// 取消计时
 cancelBtnForTimer.addEventListener('click', function () {
     // 还原暂停重启
     if (isTimerPaused) {
         isTimerPaused = false;
         pauseBtnForTimer.textContent = '暂停';
     }
-
     // 清空所有数据
     sessionStorage.removeItem('accumulatePauseTimeForTimer');
     sessionStorage.removeItem('startTimerPause');
@@ -49,9 +53,11 @@ cancelBtnForTimer.addEventListener('click', function () {
     isTimerStarted = false;
     if (timerIntervalForTimer) {
         clearInterval(timerIntervalForTimer);
+        timerIntervalForTimer = null;
     }
 });
 
+// 暂停计时
 pauseBtnForTimer.addEventListener('click', function () {
     isTimerPaused = !isTimerPaused;
     // 如果暂停了
@@ -76,24 +82,23 @@ pauseBtnForTimer.addEventListener('click', function () {
     }
 });
 
+// 每秒更新显示
 function changePerSecondForTimer() {
+    // 暂停直接略过
     if (isTimerPaused) {
         return;
     }
     let current = new Date();
     // 时间差
     let currentOffset = endTime - current.getTime();
-
-    console.log(current.getTime());
-
+    // console.log(current.getTime());
     if (sessionStorage.getItem('accumulatePauseTimeForTimer')) {
         currentOffset += Number(sessionStorage.getItem('accumulatePauseTimeForTimer'));
     }
     // 时区差异
     let timeZoneOffset = current.getTimezoneOffset() * 60 * 1000;
-
     // console.log(currentOffset, timeZoneOffset);
-
+    // 如果还没到时间
     if (currentOffset > 0) {
         let currentTime = new Date(currentOffset + timeZoneOffset);
         hourForTimer.value = String(currentTime.getHours()).padStart(2, '0');
@@ -105,7 +110,6 @@ function changePerSecondForTimer() {
             isTimerPaused = false;
             pauseBtnForTimer.textContent = '暂停';
         }
-
         // 清空所有数据
         sessionStorage.removeItem('accumulatePauseTimeForTimer');
         sessionStorage.removeItem('startTimerPause');

@@ -2,14 +2,13 @@
 sessionStorage.removeItem('turnsOfHour');
 sessionStorage.removeItem('turnsOfSecond');
 sessionStorage.removeItem('turnsOfHour');
-
+// svg部分
 const svgElement = document.getElementById("interactiveClock");
-
-// 两个按钮的常值引用
+// 钟表部分按钮的常值引用
 const setButton = document.querySelector("input#set");
 const resetButton = document.querySelector("input#reset");
 const pauseButton = document.querySelector("input#pause");
-// 设置时间的三个文本框
+// 钟表部分设置时间的三个文本框
 const hourPlace = document.querySelector('#hour_place');
 const minutePlace = document.querySelector('#minute_place');
 const secondPlace = document.querySelector('#second_place');
@@ -34,7 +33,6 @@ let secondHands = document.querySelectorAll('.second_hand');
 let minuteHand = document.querySelector('#minute_hand');
 // 时针转动
 let hourHand = document.querySelector('#hour_hand');
-
 // 时钟是否被暂停
 let isClockPaused = false;
 // 是否被重启
@@ -42,8 +40,8 @@ let isClockRestarted = false;
 // 是否是设置后的第一次
 let firstTimeAfterSet = false;
 
+// 在钟表部分编辑框中输入后表针的角度会立刻改变
 for (const place of places) {
-    // 输入后自动更新角度
     place.addEventListener('input', function () {
         for (const hand of [minuteHand, hourHand]) {
             hand.style.transitionDuration = "0s";
@@ -61,21 +59,18 @@ for (const place of places) {
             let angleOfSecond = 6 * Number(setSecond);
             let angleOfMinute = 6 * (Number(setMinute) + Number(setSecond) / 60);
             let angleOfHour = 30 * (Number(setHour) % 12 + (Number(setMinute) + Number(setSecond) / 60) / 60);
-
             // 设置角度
             for (const item of secondHands) {
                 item.style.setProperty('--degree', `${angleOfSecond}deg`);
             }
             minuteHand.style.setProperty('--degree', `${angleOfMinute}deg`);
             hourHand.style.setProperty('--degree', `${angleOfHour}deg`);
-            console.log(angleOfHour, angleOfSecond, angleOfMinute, setHour, setMinute, setSecond);
+            // console.log(angleOfHour, angleOfSecond, angleOfMinute, setHour, setMinute, setSecond);
         }
     });
 }
 
-
-
-// 点击设置
+// 点击设置时间的按钮
 setButton.addEventListener('click', function () {
     // 设置的时间
     let setHour = hourPlace.value;
@@ -83,6 +78,7 @@ setButton.addEventListener('click', function () {
     let setSecond = secondPlace.value;
     // 格式正确
     if (hourRegex.test(setHour) && secondRegex.test(setSecond) && minuteRegex.test(setMinute)) {
+        // 记录是否是设置时间后的第一次
         firstTimeAfterSet = true;
         // 存储时间
         sessionStorage.setItem('setTime', setHour + ":" + setMinute + ":" + setSecond);
@@ -123,7 +119,7 @@ pauseButton.addEventListener('click', function () {
         secondPlace.disabled = false;
         // 起始的暂停时间
         sessionStorage.setItem("startPause", String(Date.now()));
-
+        // 用于更改CSS样式，非暂停状态下不可以拖动表针
         svgElement.classList.add("clockStopped");
         svgElement.classList.remove("clockNotStopped");
     } else {
@@ -135,12 +131,13 @@ pauseButton.addEventListener('click', function () {
         isClockRestarted = true;
         // 暂停的终止时间
         sessionStorage.setItem('endPause', String(Date.now()));
-
+        // 更改CSS样式
         svgElement.classList.add("clockNotStopped");
         svgElement.classList.remove("clockStopped");
     }
 })
 
+// 设置闹钟
 setAlarmButton.addEventListener('click', function () {
     let alarmHourValue = alarmHour.value;
     let alarmMinuteValue = alarmMinute.value;
@@ -257,7 +254,6 @@ function changePerSecond() {
     checkAlarm();
 
     // 默认时间是当前时间
-
     let pauseTime = 0;
     let current;
 
@@ -297,8 +293,7 @@ function changePerSecond() {
         // 没有设置过时间
         current = new Date(Date.now() - Number(sessionStorage.getItem('pauseTime')));
     }
-
-
+    // 动画为平滑移动
     for (const hand of [minuteHand, hourHand]) {
         hand.style.transitionDuration = "0.5s";
     }
@@ -359,14 +354,12 @@ function changePerSecond() {
     turnsOfHour = Number(sessionStorage.getItem('turnsOfHour'));
 
     // rotate的角度必须是保证单调递增的，一旦减小就会逆时针旋转
-
     for (const item of secondHands) {
         item.style.setProperty('--degree', `${angleOfSecond + 360 * turnsOfSecond}deg`);
     }
     minuteHand.style.setProperty('--degree', `${angleOfMinute + 360 * turnsOfMinute}deg`);
     hourHand.style.setProperty('--degree', `${angleOfHour + 360 * turnsOfHour}deg`);
     const degreeValue = window.getComputedStyle(minuteHand).getPropertyValue('--degree');
-
     // console.log(`The degree value is: ${degreeValue}`);
 }
 

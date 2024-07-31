@@ -9,8 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const secondHand = document.querySelector('#second_handle');
     const hands = [minuteHand, hourHand, secondHand];
 
-    
-
     hands.forEach(hand => {
         hand.addEventListener('mousedown', startDrag);
     });
